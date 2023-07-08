@@ -1,7 +1,7 @@
 import logo from './../../assets/images/logo/logo.svg'
 import logoSm from './../../assets/images/logo/logo-sm.svg'
 import { Link, NavLink } from 'react-router-dom'
-import { Home, PackageIcon, Gift, User, LogOut } from '@styled-icons/feather'
+import { Home, PackageIcon, Gift, User, LogOut, Send } from '@styled-icons/feather'
 
 export default function SidebarLayout() {
     return (
@@ -48,6 +48,14 @@ export default function SidebarLayout() {
                                     <User />
                                 </span>
                                 <span className="pc-mtext">Profil</span>
+                            </NavLink>
+                        </li>
+                        <li className="pc-item">
+                            <NavLink to={"/panel/announcements"} className="pc-link ">
+                                <span className="pc-micon">
+                                    <Send />
+                                </span>
+                                <span className="pc-mtext">Pengumuman</span>
                             </NavLink>
                         </li>
                         <li className="pc-item">

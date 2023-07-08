@@ -1,11 +1,26 @@
 import { Plus } from '@styled-icons/entypo'
 import { Barcode, Edit, Trash, Spreadsheet, Save } from '@styled-icons/boxicons-solid'
 import { Button, Form, Modal } from 'react-bootstrap'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2'
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import APP_CONFIG from '../../utils/APP_CONFIG';
+import { ToastContainer, toast } from 'react-toastify';
+import StringUtil from '../../utils/StringUtil';
 
 export default function CommonProductPage() {
+
+    useEffect(() => {
+        loadProducts()
+    }, [])
+
+    const [products, setProducts] = useState([])
+
+    const [addProductName, setAddProductName] = useState('');
+    const [addProductCode, setAddProductCode] = useState('');
+    const [addPrice, setAddPrice] = useState('');
+    const [addPhoto, setAddPhoto] = useState('');
 
     const [show, setShow] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
@@ -21,13 +36,47 @@ export default function CommonProductPage() {
     const handleShowGenerateLabel = () => setShowGenerateLabel(true);
 
     const handleSaveCreateProduct = () => {
-        Swal.fire({
-            title: 'Berhasil!',
-            text: 'Produk telah ditambahkan',
-            icon: 'success',
-        })
+        const token = localStorage.getItem('api_token')
+        const formData = new FormData();
 
-        handleClose();
+        formData.append('product_name', addProductName)
+        formData.append('product_code', addProductCode)
+        formData.append('price', addPrice)
+        formData.append("photo", addPhoto);
+
+        axios.post(APP_CONFIG.API_URL + 'products', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                'Authorization': "Bearer " + token
+            },
+        }).then((res) => {
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'Produk telah ditambahkan',
+                icon: 'success',
+            })
+
+            handleClose();
+            loadProducts()
+        }).catch((err) => {
+            if (err.response.status == 422) {
+                toast(`${err.response.data.msg} ${err.response.data.error ? ', ' + err.response.data.error : ''}`, {
+                    type: 'error',
+                });
+            }
+        })
+    }
+
+    const loadProducts = () => {
+        const token = localStorage.getItem('api_token')
+
+        axios.get(APP_CONFIG.API_URL + 'products', {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then((res) => {
+            setProducts(res.data.data.products.data)
+        })
     }
 
     const handleSaveGenerateLabel = () => {
@@ -71,8 +120,35 @@ export default function CommonProductPage() {
         })
     }
 
+    const _renderProducts = () => {
+        return products.map((product, i) => {
+            return (
+                <tr>
+                    <td>{i + 1}</td>
+                    <td>
+                        <img src={product.photo} width={80} className='img-thumbnail' alt="" />
+                    </td>
+                    <td>{product.product_name}</td>
+                    <td>{product.product_code}</td>
+                    <td>Rp{StringUtil.formatRupiah(product.price)}</td>
+                    <td>
+                        <button className='btn btn-sm btn-warning' onClick={handleShowGenerateLabel}><Barcode className='mr-1' />Generate Label</button>
+                    </td>
+                    <td>
+                        <div className='d-flex justify-content-center align-items-center'>
+                            <button className='btn btn-sm btn-primary' onClick={handleShowEdit}><Edit className='mr-1' />Edit</button>
+                            <button className='btn btn-sm btn-danger mx-1' onClick={handleDeleteProduct}><Trash className='mr-1' />Hapus</button>
+                            <Link to={'/panel/common-product-history'} className='btn btn-sm btn-info'><Spreadsheet className='mr-1' />History</Link>
+                        </div>
+                    </td>
+                </tr>
+            )
+        })
+    }
+
     return (
         <div>
+            <ToastContainer />
             <div className="page-header">
                 <div className="page-block">
                     <div className="row align-items-center">
@@ -99,19 +175,19 @@ export default function CommonProductPage() {
                     <Form>
                         <Form.Group className="mb-3" controlId="product_name">
                             <Form.Label>Nama Produk</Form.Label>
-                            <Form.Control type="text" placeholder="Nama Produk" />
+                            <Form.Control type="text" placeholder="Nama Produk" onChange={(event) => { setAddProductName(event.target.value) }} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="product_code">
                             <Form.Label>Kode Produk</Form.Label>
-                            <Form.Control type="text" placeholder="Kode Produk" />
+                            <Form.Control type="text" placeholder="Kode Produk" onChange={(event) => { setAddProductCode(event.target.value) }} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="price">
                             <Form.Label>Harga</Form.Label>
-                            <Form.Control type="number" placeholder="Harga" />
+                            <Form.Control type="number" placeholder="Harga" onChange={(event) => { setAddPrice(event.target.value) }} />
                         </Form.Group>
                         <Form.Group controlId="image" className="mb-3">
                             <Form.Label>Gambar</Form.Label>
-                            <Form.Control type="file" />
+                            <Form.Control type="file" onChange={(event) => { setAddPhoto(event.target.files[0]) }} />
                         </Form.Group>
                     </Form>
                 </Modal.Body>
@@ -234,25 +310,7 @@ export default function CommonProductPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>
-                                            <img src="https://ae01.alicdn.com/kf/H3af1e6c21bcc4cd9a7ab4d884aa373f3F/Buku-Catatan-Tangan-Notebook-Cherry-Blossom-A6-Gesper-Magnetik-Buku-Harian-Anak-Perempuan-Buku-Catatan-Lucu.jpg" width={80} className='img-thumbnail' alt="" />
-                                        </td>
-                                        <td>Cherry Blossoms</td>
-                                        <td>SNMT-261</td>
-                                        <td>RP10.000</td>
-                                        <td>
-                                            <button className='btn btn-sm btn-warning' onClick={handleShowGenerateLabel}><Barcode className='mr-1' />Generate Label</button>
-                                        </td>
-                                        <td>
-                                            <div className='d-flex justify-content-center align-items-center'>
-                                                <button className='btn btn-sm btn-primary' onClick={handleShowEdit}><Edit className='mr-1' />Edit</button>
-                                                <button className='btn btn-sm btn-danger mx-1' onClick={handleDeleteProduct}><Trash className='mr-1' />Hapus</button>
-                                                <Link to={'/panel/common-product-history'} className='btn btn-sm btn-info'><Spreadsheet className='mr-1' />History</Link>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    {_renderProducts()}
                                 </tbody>
                             </table>
                         </div>

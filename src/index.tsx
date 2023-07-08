@@ -16,6 +16,7 @@ import SpecialProductPage from './pages/panel/SpecialProductPage';
 import SpecialProductHistoryPage from './pages/panel/SpecialProductHistoryPage';
 import SpecialProductHistoryDetailPage from './pages/panel/SpecialProductHistoryDetailPage';
 import ProfilePage from './pages/panel/ProfilePage';
+import AnnouncementsPage from './pages/panel/AnnouncementsPage';
 
 const router = createBrowserRouter([
     {
@@ -29,6 +30,15 @@ const router = createBrowserRouter([
             {
                 path: "dashboard",
                 element: <DashboardPage />,
+            },
+            {
+                path: "announcements",
+                children: [
+                    {
+                        path: '',
+                        element: <AnnouncementsPage />
+                    }
+                ]
             },
             {
                 path: "common-product",
