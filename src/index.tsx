@@ -19,6 +19,9 @@ import ProfilePage from './pages/panel/ProfilePage';
 import AnnouncementsPage from './pages/panel/AnnouncementsPage';
 import BannersPage from './pages/panel/BanersPage';
 import CustomAttendanceLocationsPage from './pages/panel/CustomAttendanceLocationsPage';
+import SettingsPage from './pages/panel/SettingsPage';
+import JobsPage from './pages/panel/JobsPage';
+import EmployeesPage from './pages/panel/EmployeesPage';
 
 const router = createBrowserRouter([
     {
@@ -57,6 +60,33 @@ const router = createBrowserRouter([
                     {
                         path: '',
                         element: <CustomAttendanceLocationsPage />
+                    }
+                ]
+            },
+            {
+                path: 'settings',
+                children: [
+                    {
+                        path: '',
+                        element: <SettingsPage />
+                    }
+                ]
+            },
+            {
+                path: 'jobs',
+                children: [
+                    {
+                        path: '',
+                        element: <JobsPage />
+                    }
+                ]
+            },
+            {
+                path: 'employees',
+                children: [
+                    {
+                        path: '',
+                        element: <EmployeesPage />
                     }
                 ]
             },

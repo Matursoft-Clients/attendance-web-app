@@ -1,7 +1,7 @@
 import logo from './../../assets/images/logo/logo.svg'
 import logoSm from './../../assets/images/logo/logo-sm.svg'
 import { Link, NavLink } from 'react-router-dom'
-import { Home, PackageIcon, Gift, User, LogOut, Send, Sidebar, Map } from '@styled-icons/feather'
+import { Home, PackageIcon, Gift, User, LogOut, Send, Sidebar, Map, Tv, Briefcase, Users } from '@styled-icons/feather'
 
 export default function SidebarLayout() {
     return (
@@ -59,6 +59,14 @@ export default function SidebarLayout() {
                             </NavLink>
                         </li>
                         <li className="pc-item">
+                            <NavLink to={"/panel/jobs"} className="pc-link ">
+                                <span className="pc-micon">
+                                    <Briefcase />
+                                </span>
+                                <span className="pc-mtext">Jabatan</span>
+                            </NavLink>
+                        </li>
+                        <li className="pc-item">
                             <NavLink to={"/panel/banners"} className="pc-link ">
                                 <span className="pc-micon">
                                     <Sidebar />
@@ -72,6 +80,22 @@ export default function SidebarLayout() {
                                     <Map />
                                 </span>
                                 <span className="pc-mtext">Lokasi Absen Kustom</span>
+                            </NavLink>
+                        </li>
+                        <li className="pc-item">
+                            <NavLink to={"/panel/employees"} className="pc-link ">
+                                <span className="pc-micon">
+                                    <Users />
+                                </span>
+                                <span className="pc-mtext">Karyawan</span>
+                            </NavLink>
+                        </li>
+                        <li className="pc-item">
+                            <NavLink to={"/panel/settings"} className="pc-link ">
+                                <span className="pc-micon">
+                                    <Tv />
+                                </span>
+                                <span className="pc-mtext">Pengaturan</span>
                             </NavLink>
                         </li>
                         <li className="pc-item">

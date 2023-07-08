@@ -1,8 +1,31 @@
 import { Save } from 'styled-icons/boxicons-solid'
 import avatar from './../../assets/images/samples/avatar.jpeg'
 import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import APP_CONFIG from '../../utils/APP_CONFIG'
+import TokenUtil from '../../utils/TokenUtil'
+import ResponseHandler from '../../utils/ResponseHandler'
 
 export default function ProfilePage() {
+
+    const [user, setUser] = useState()
+
+    useEffect(() => {
+        loadUser()
+    }, [])
+
+    const loadUser = () => {
+        axios.get(APP_CONFIG.API_URL + 'announcements', {
+            headers: {
+                Authorization: 'Bearer ' + TokenUtil.getApiToken()
+            }
+        }).then((res) => {
+            setUser(res.data.data.announcements)
+        }).catch((err) => {
+            ResponseHandler.errorHandler(err)
+        })
+    }
 
     return (
         <div>

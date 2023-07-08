@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import avatar from './../../assets/images/samples/avatar.jpeg'
 
 export default function NavLayout() {
@@ -22,10 +22,10 @@ export default function NavLayout() {
                                     <i data-feather="user"></i>
                                     <span>My Account</span>
                                 </Link>
-                                <a href="#!" className="dropdown-item">
+                                <NavLink to={"/panel/settings"} className="dropdown-item">
                                     <i data-feather="settings"></i>
-                                    <span>Settings</span>
-                                </a>
+                                    <span>Pengaturan</span>
+                                </NavLink>
                                 <a href="#!" className="dropdown-item">
                                     <i data-feather="power"></i>
                                     <span>Logout</span>
