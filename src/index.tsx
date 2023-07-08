@@ -17,6 +17,8 @@ import SpecialProductHistoryPage from './pages/panel/SpecialProductHistoryPage';
 import SpecialProductHistoryDetailPage from './pages/panel/SpecialProductHistoryDetailPage';
 import ProfilePage from './pages/panel/ProfilePage';
 import AnnouncementsPage from './pages/panel/AnnouncementsPage';
+import BannersPage from './pages/panel/BanersPage';
+import CustomAttendanceLocationsPage from './pages/panel/CustomAttendanceLocationsPage';
 
 const router = createBrowserRouter([
     {
@@ -37,6 +39,24 @@ const router = createBrowserRouter([
                     {
                         path: '',
                         element: <AnnouncementsPage />
+                    }
+                ]
+            },
+            {
+                path: "banners",
+                children: [
+                    {
+                        path: '',
+                        element: <BannersPage />
+                    }
+                ]
+            },
+            {
+                path: 'custom-attendance-locations',
+                children: [
+                    {
+                        path: '',
+                        element: <CustomAttendanceLocationsPage />
                     }
                 ]
             },

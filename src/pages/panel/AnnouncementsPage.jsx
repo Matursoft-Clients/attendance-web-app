@@ -68,7 +68,7 @@ export default function AnnouncementsPage() {
         }).then((res) => {
             setAnnouncements(res.data.data.announcements)
         }).catch((err) => {
-            console.log(err)
+            ResponseHandler.errorHandler(err)
         })
 
     }

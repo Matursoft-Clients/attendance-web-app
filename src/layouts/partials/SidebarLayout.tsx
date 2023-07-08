@@ -1,7 +1,7 @@
 import logo from './../../assets/images/logo/logo.svg'
 import logoSm from './../../assets/images/logo/logo-sm.svg'
 import { Link, NavLink } from 'react-router-dom'
-import { Home, PackageIcon, Gift, User, LogOut, Send } from '@styled-icons/feather'
+import { Home, PackageIcon, Gift, User, LogOut, Send, Sidebar, Map } from '@styled-icons/feather'
 
 export default function SidebarLayout() {
     return (
@@ -56,6 +56,22 @@ export default function SidebarLayout() {
                                     <Send />
                                 </span>
                                 <span className="pc-mtext">Pengumuman</span>
+                            </NavLink>
+                        </li>
+                        <li className="pc-item">
+                            <NavLink to={"/panel/banners"} className="pc-link ">
+                                <span className="pc-micon">
+                                    <Sidebar />
+                                </span>
+                                <span className="pc-mtext">Banner</span>
+                            </NavLink>
+                        </li>
+                        <li className="pc-item">
+                            <NavLink to={"/panel/custom-attendance-locations"} className="pc-link ">
+                                <span className="pc-micon">
+                                    <Map />
+                                </span>
+                                <span className="pc-mtext">Lokasi Absen Kustom</span>
                             </NavLink>
                         </li>
                         <li className="pc-item">
