@@ -22,6 +22,7 @@ import CustomAttendanceLocationsPage from './pages/panel/CustomAttendanceLocatio
 import SettingsPage from './pages/panel/SettingsPage';
 import JobsPage from './pages/panel/JobsPage';
 import EmployeesPage from './pages/panel/EmployeesPage';
+import DailyAttendancesPage from './pages/panel/DailyAttendancesPage';
 
 const router = createBrowserRouter([
     {
@@ -87,6 +88,15 @@ const router = createBrowserRouter([
                     {
                         path: '',
                         element: <EmployeesPage />
+                    }
+                ]
+            },
+            {
+                path: 'daily-attendances',
+                children: [
+                    {
+                        path: '',
+                        element: <DailyAttendancesPage />
                     }
                 ]
             },

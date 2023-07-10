@@ -1,7 +1,16 @@
-import { Link, NavLink } from 'react-router-dom'
-import avatar from './../../assets/images/samples/avatar.jpeg'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import avatar from './../../assets/images/samples/no-photo.png'
+import { useEffect, useState } from 'react'
 
-export default function NavLayout() {
+export default function NavLayout(props) {
+
+    const [user, setUser] = useState({})
+
+    useEffect(() => {
+        setUser(props.user)
+    }, [])
+
+    const navigate = useNavigate()
 
     return (
         <header className="pc-header ">
@@ -11,9 +20,9 @@ export default function NavLayout() {
                         <li className="dropdown pc-h-item">
                             <a className="pc-head-link dropdown-toggle arrow-none mr-0" data-toggle="dropdown" href="#"
                                 role="button" aria-haspopup="false" aria-expanded="false">
-                                <img src={avatar} alt="user-image" className="user-avtar" />
+                                <img src={user.photo ? user.photo : avatar} alt="user-image" className="user-avtar" />
                                 <span>
-                                    <span className="user-name">MyFRA</span>
+                                    <span className="user-name">{user.name}</span>
                                     <span className="user-desc">Administrator</span>
                                 </span>
                             </a>
@@ -26,7 +35,10 @@ export default function NavLayout() {
                                     <i data-feather="settings"></i>
                                     <span>Pengaturan</span>
                                 </NavLink>
-                                <a href="#!" className="dropdown-item">
+                                <a href="#!" className="dropdown-item" onClick={() => {
+                                    localStorage.removeItem('api_token')
+                                    navigate('/login')
+                                }}>
                                     <i data-feather="power"></i>
                                     <span>Logout</span>
                                 </a>

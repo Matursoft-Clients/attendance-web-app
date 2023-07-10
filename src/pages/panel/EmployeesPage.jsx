@@ -125,6 +125,7 @@ export default function EmployeesPage() {
         formData.append('name', nameAdd)
         formData.append('email', emailAdd)
         formData.append('password', passwordAdd)
+        formData.append('password_confirmation', '12345678')
         formData.append('photo', imageAdd)
 
         axios.post(APP_CONFIG.API_URL + 'employees', formData, {
@@ -147,7 +148,12 @@ export default function EmployeesPage() {
         formData.append('job_position_uuid', employeeObjEdit.job_position_uuid)
         formData.append('name', employeeObjEdit.name)
         formData.append('email', employeeObjEdit.email)
-        formData.append('password', employeeObjEdit.password)
+
+        if (employeeObjEdit.password) {
+            formData.append('password', '12345678')
+            formData.append('password_confirmation', '12345678')
+        }
+
         if (imageEdit) {
             formData.append('photo', imageEdit)
         }

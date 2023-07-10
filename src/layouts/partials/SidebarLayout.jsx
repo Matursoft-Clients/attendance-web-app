@@ -1,16 +1,26 @@
 import logo from './../../assets/images/logo/logo.svg'
 import logoSm from './../../assets/images/logo/logo-sm.svg'
-import { Link, NavLink } from 'react-router-dom'
-import { Home, PackageIcon, Gift, User, LogOut, Send, Sidebar, Map, Tv, Briefcase, Users } from '@styled-icons/feather'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Home, PackageIcon, Gift, User, LogOut, Send, Sidebar, Map, Tv, Briefcase, Users, Calendar } from '@styled-icons/feather'
+import { useEffect, useState } from 'react'
 
-export default function SidebarLayout() {
+export default function SidebarLayout(props) {
+
+    const [settings, setSettings] = useState({})
+
+    useEffect(() => {
+        setSettings(props.settings)
+    }, [])
+
+    const navigate = useNavigate()
+
     return (
         <nav className="pc-sidebar ">
             <div className="navbar-wrapper">
                 <div className="m-header">
                     <Link to={"/panel/dashboard"} className="b-brand">
-                        <img src={logo} alt="" className="logo logo-lg" />
-                        <img src={logoSm} alt="" className="logo logo-sm" />
+                        <img src={settings.office_logo ? settings.office_logo : null} alt="logo" style={{ width: '45px' }} className="logo logo-lg" />
+                        <h4 className='text-white'>{settings.office_name}</h4>
                     </Link>
                 </div>
                 <div className="navbar-content">
@@ -27,19 +37,11 @@ export default function SidebarLayout() {
                             </NavLink>
                         </li>
                         <li className="pc-item">
-                            <NavLink to={"/panel/common-product"} className="pc-link">
+                            <NavLink to={"/panel/daily-attendances"} className="pc-link ">
                                 <span className="pc-micon">
-                                    <PackageIcon />
+                                    <Calendar />
                                 </span>
-                                <span className="pc-mtext">Produk</span>
-                            </NavLink>
-                        </li>
-                        <li className="pc-item">
-                            <NavLink to={"/panel/special-product"} className="pc-link ">
-                                <span className="pc-micon">
-                                    <Gift />
-                                </span>
-                                <span className="pc-mtext">Produk Spesial</span>
+                                <span className="pc-mtext">Absen Harian</span>
                             </NavLink>
                         </li>
                         <li className="pc-item">
@@ -99,12 +101,15 @@ export default function SidebarLayout() {
                             </NavLink>
                         </li>
                         <li className="pc-item">
-                            <NavLink to={"/login"} className="pc-link ">
+                            <span style={{ cursor: 'pointer' }} className="pc-link " onClick={() => {
+                                localStorage.removeItem('api_token')
+                                navigate('/login')
+                            }}>
                                 <span className="pc-micon">
                                     <LogOut />
                                 </span>
                                 <span className="pc-mtext">Logout</span>
-                            </NavLink>
+                            </span>
                         </li>
                     </ul>
                 </div>

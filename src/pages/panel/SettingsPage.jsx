@@ -63,6 +63,9 @@ export default function SettingsPage() {
         }).then((res) => {
             ResponseHandler.successHandler(res)
             loadSettings()
+            setTimeout(() => {
+                window.location.reload()
+            }, 500);
         }).catch((err) => {
             ResponseHandler.errorHandler(err)
         })
@@ -138,7 +141,7 @@ export default function SettingsPage() {
                                             <img className="img-fluid wid-80" src={officeLogo ? officeLogo : require('./../../assets/images/samples/no-image.jpg')} alt="User image" />
                                             <br />
                                             <label className='mt-2' htmlFor="office_logo">Logo Perusahaan</label>
-                                            <input type="file" name="office_logo" id="office_logo" className='form-control' onChange={(e) => {
+                                            <input type="file" name="office_logo" id="office_logo" accept='image/*' className='form-control' onChange={(e) => {
                                                 let file = e.target.files[0]
                                                 setOfficeLogoObj(file)
                                                 setOfficeLogo(URL.createObjectURL(file))
