@@ -21,30 +21,22 @@ export default function DailyAttendancesPage() {
             width: '100px'
         },
         {
-            name: 'Judul',
-            selector: row => row.title,
+            name: 'Karyawan',
+            selector: row => row.employee.name,
         },
         {
-            name: 'Dibuat Pada',
+            name: 'Status Absen Masuk',
+            selector: row => row.presence_entry_status,
+        },
+        {
+            name: 'Status Absen Pulang',
+            selector: row => row.presence_exit_status ? row.presence_exit_status : 'Belum Pulang',
+        },
+        {
+            name: 'Tanggal',
             selector: (row) => {
-                return DateUtil.formatYmdHisFromDate(row.created_at)
+                return DateUtil.formatYmdHisFromDate(row.date)
             },
-        },
-        {
-            name: 'Aksi',
-            cell: (row) => {
-                return (
-                    <></>
-                    // <div className='d-flex justify-content-center align-items-center'>
-                    //     <button className='btn btn-sm btn-primary' onClick={() => {
-                    //         handleShowEdit(row.uuid)
-                    //     }}><Edit className='mr-1' />Edit</button>
-                    //     <button className='btn btn-sm btn-danger mx-1' onClick={() => {
-                    //         handleDeleteData(row.uuid)
-                    //     }}><Trash className='mr-1' />Hapus</button>
-                    // </div>
-                )
-            }
         }
     ];
 

@@ -47,9 +47,9 @@ export default function SettingsPage() {
         if (officeLogoObj) {
             formData.append('office_logo', officeLogoObj)
         }
-        formData.append('presence_entry_start', presenceEntryStart)
-        formData.append('presence_entry_end', presenceEntryEnd)
-        formData.append('presence_exit', presenceExit)
+        formData.append('presence_entry_start', presenceEntryStart.length == 5 ? `${presenceEntryStart}:00` : presenceEntryStart)
+        formData.append('presence_entry_end', presenceEntryEnd.length == 5 ? `${presenceEntryEnd}:00` : presenceEntryEnd)
+        formData.append('presence_exit', presenceExit.length == 5 ? `${presenceExit}:00` : presenceExit)
         formData.append('presence_location_address', presenceAddress)
         formData.append('presence_meter_radius', presenceMeterRadius)
         formData.append('presence_location_latitude', marker[0])

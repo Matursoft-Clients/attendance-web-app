@@ -19,6 +19,16 @@ const DateUtil = {
         const day = dateObj.getDate() > 9 ? dateObj.getDate() : `0` + dateObj.getDate()
 
         return `${year}-${month}-${day}`
+    },
+    getCurrentYear: () => {
+        const dateObj = new Date()
+
+        return dateObj.getFullYear()
+    },
+    getCurrentMonth: () => {
+        const dateObj = new Date()
+
+        return dateObj.getMonth() + 1 > 9 ? dateObj.getMonth() + 1 : `0${dateObj.getMonth() + 1}`
     }
 }
 

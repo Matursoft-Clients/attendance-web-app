@@ -1,5 +1,6 @@
 import { Plus } from '@styled-icons/entypo'
-import { Edit, Trash, Save } from '@styled-icons/boxicons-solid'
+import { Edit, Trash, Save, } from '@styled-icons/boxicons-solid'
+import { SearchAlt2 } from '@styled-icons/boxicons-regular'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2'
@@ -11,13 +12,18 @@ import { tableCustomStyles } from '../../styles/tableCustomStyles';
 import { ToastContainer } from 'react-toastify';
 import ResponseHandler from '../../utils/ResponseHandler';
 import DateUtil from '../../utils/DateUtil';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import './../../styles/react-calendar.css'
 
 export default function EmployeesPage() {
 
     const [show, setShow] = useState(false);
+    const [showCalendarEmployee, setShowCalendarEmployee] = useState(false);
     const [employees, setEmployees] = useState([])
     const [jobs, setJobs] = useState([])
     const [showEdit, setShowEdit] = useState(false);
+    const [employeeCalendar, setEmployeeCalendar] = useState([])
 
     const [jobPositionUuid, setJobPositionUuid] = useState('')
     const [nameAdd, setNameAdd] = useState('')
@@ -64,9 +70,13 @@ export default function EmployeesPage() {
         },
         {
             name: 'Aksi',
+            width: '300px',
             cell: (row) => {
                 return (
                     <div className='d-flex justify-content-center align-items-center'>
+                        <button className='mr-1 btn btn-sm btn-success' onClick={() => {
+                            handleShowCalendarEmployee(row)
+                        }}><SearchAlt2 className='mr-1' />Lihat Absen</button>
                         <button className='btn btn-sm btn-primary' onClick={() => {
                             handleShowEdit(row)
                         }}><Edit className='mr-1' />Edit</button>
@@ -83,6 +93,24 @@ export default function EmployeesPage() {
         loadMainData()
         loadJobs()
     }, [])
+
+    const handleShowCalendarEmployee = (employee) => {
+        // axios.get(APP_CONFIG.API_URL + `calendar?date=${DateUtil.getCurrentYear()}-${DateUtil.getCurrentMonth()}&employee_uuid=${employee.uuid}`, {
+        //     headers: {
+        //         Authorization: 'Bearer ' + TokenUtil.getApiToken()
+        //     }
+        // }).then((res) => {
+        //     setEmployeeCalendar(res.data.data)
+        // }).catch((err) => {
+        //     ResponseHandler.errorHandler(err)
+        // })
+
+        setShowCalendarEmployee(employee)
+    }
+
+    const handleCloseShowModalEmployee = () => {
+        setShowCalendarEmployee(false)
+    }
 
     const loadJobs = () => {
         axios.get(APP_CONFIG.API_URL + 'job-positions', {
@@ -269,6 +297,22 @@ export default function EmployeesPage() {
                 </Modal.Footer>
             </Modal>
             {/* End of Modal Create Data */}
+
+            {/* Modal Show Calendar Employee  */}
+            <Modal show={showCalendarEmployee} onHide={handleClose} size="md">
+                <Modal.Header>
+                    <Modal.Title>Absen Karyawan</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Calendar />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseShowModalEmployee}>
+                        Tutup
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* End of Modal Show Calendar Employee */}
 
             {/* Modal Edit Data  */}
             <Modal show={showEdit} onHide={handleCloseEdit} size="lg">

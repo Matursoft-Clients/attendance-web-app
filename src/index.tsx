@@ -23,8 +23,18 @@ import SettingsPage from './pages/panel/SettingsPage';
 import JobsPage from './pages/panel/JobsPage';
 import EmployeesPage from './pages/panel/EmployeesPage';
 import DailyAttendancesPage from './pages/panel/DailyAttendancesPage';
+import HomePage from './pages/HomePage';
 
 const router = createBrowserRouter([
+    {
+        path: "/",
+        children: [
+            {
+                path: '',
+                element: <HomePage />
+            }
+        ]
+    },
     {
         path: "login",
         element: <LoginPage />,
