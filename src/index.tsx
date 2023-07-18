@@ -24,6 +24,7 @@ import JobsPage from './pages/panel/JobsPage';
 import EmployeesPage from './pages/panel/EmployeesPage';
 import DailyAttendancesPage from './pages/panel/DailyAttendancesPage';
 import HomePage from './pages/HomePage';
+import BranchsPage from './pages/panel/BranchsPage';
 
 const router = createBrowserRouter([
     {
@@ -98,6 +99,15 @@ const router = createBrowserRouter([
                     {
                         path: '',
                         element: <EmployeesPage />
+                    }
+                ]
+            },
+            {
+                path: 'branchs',
+                children: [
+                    {
+                        path: '',
+                        element: <BranchsPage />
                     }
                 ]
             },

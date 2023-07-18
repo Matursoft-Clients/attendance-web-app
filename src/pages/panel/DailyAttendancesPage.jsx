@@ -45,7 +45,7 @@ export default function DailyAttendancesPage() {
     }, [])
 
     const loadMainData = () => {
-        axios.get(APP_CONFIG.API_URL + 'daily-attendances', {
+        axios.get(APP_CONFIG.API_URL + 'daily-attendances?status=today', {
             headers: {
                 Authorization: 'Bearer ' + TokenUtil.getApiToken()
             }

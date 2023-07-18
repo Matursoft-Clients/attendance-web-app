@@ -89,11 +89,11 @@ export default function EmployeesPage() {
         },
         {
             name: 'Cabang',
-            selector: row => 'Nama Cabang',
+            selector: row => row.branch.name,
         },
         {
             name: 'Jabatan',
-            selector: row => 'Nama Jabatan',
+            selector: row => row.job_position.name,
         },
         {
             name: 'email',

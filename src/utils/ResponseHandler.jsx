@@ -20,6 +20,16 @@ const ResponseHandler = {
                     type: 'error',
                 });
             }
+        } else if (err.response.status == 422) {
+            if (typeof err.response.data.message == 'object') {
+                toast(`${err.response.data.message[0]}`, {
+                    type: 'error',
+                });
+            } else {
+                toast(`${err.response.data.msg}`, {
+                    type: 'error',
+                });
+            }
         }
     }
 }

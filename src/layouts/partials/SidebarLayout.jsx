@@ -1,7 +1,7 @@
 import logo from './../../assets/images/logo/logo.svg'
 import logoSm from './../../assets/images/logo/logo-sm.svg'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { Home, PackageIcon, Gift, User, LogOut, Send, Sidebar, Map, Tv, Briefcase, Users, Calendar } from '@styled-icons/feather'
+import { Home, PackageIcon, Gift, User, LogOut, Send, Sidebar, Map, Tv, Briefcase, Users, Calendar, Airplay } from '@styled-icons/feather'
 import { useEffect, useState } from 'react'
 
 export default function SidebarLayout(props) {
@@ -82,6 +82,14 @@ export default function SidebarLayout(props) {
                                     <Map />
                                 </span>
                                 <span className="pc-mtext">Lokasi Absen Kustom</span>
+                            </NavLink>
+                        </li>
+                        <li className="pc-item">
+                            <NavLink to={"/panel/branchs"} className="pc-link ">
+                                <span className="pc-micon">
+                                    <Airplay />
+                                </span>
+                                <span className="pc-mtext">Cabang</span>
                             </NavLink>
                         </li>
                         <li className="pc-item">

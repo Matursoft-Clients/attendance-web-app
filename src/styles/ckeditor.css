@@ -1,0 +1,30 @@
+.ck-editor__editable {
+    min-height: 250px;
+}
+
+.ck-content strong {
+    font-weight: 600 !important;
+}
+
+.ck-content a {
+    color: #0e7490 !important;
+}
+
+.ck-content ul li {
+    list-style-type: disc !important;
+    list-style-position: inside;
+}
+
+.ck-content ol li {
+    list-style-type: decimal !important;
+    list-style-position: inside;
+}
+
+.ck-rounded-corners .ck.ck-balloon-panel,
+.ck.ck-balloon-panel.ck-rounded-corners {
+    z-index: 9999999999999999999;
+}
+
+.ck-input_focused {
+    z-index: 9999999999999999;
+}
