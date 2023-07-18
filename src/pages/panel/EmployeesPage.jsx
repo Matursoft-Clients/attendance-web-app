@@ -1,5 +1,5 @@
 import { Plus } from '@styled-icons/entypo'
-import { Edit, Trash, Save, } from '@styled-icons/boxicons-solid'
+import { Edit, Trash, Save, Detail } from '@styled-icons/boxicons-solid'
 import { SearchAlt2 } from '@styled-icons/boxicons-regular'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { useEffect, useState } from 'react';
@@ -18,22 +18,55 @@ import './../../styles/react-calendar.css'
 
 export default function EmployeesPage() {
 
-    const [show, setShow] = useState(false);
-    const [showCalendarEmployee, setShowCalendarEmployee] = useState(false);
+    /**
+     * Main Data State
+     * 
+     */
     const [employees, setEmployees] = useState([])
     const [jobs, setJobs] = useState([])
-    const [showEdit, setShowEdit] = useState(false);
-    const [employeeCalendar, setEmployeeCalendar] = useState([])
+    const [branches, setBranches] = useState([])
 
+    /**
+     * Create Data State
+     * 
+     */
+    const [show, setShow] = useState(false);
     const [jobPositionUuid, setJobPositionUuid] = useState('')
+    const [branchUuid, setBranchUuid] = useState('')
     const [nameAdd, setNameAdd] = useState('')
+    const [whatsappNumberAdd, setWhatsappNumberAdd] = useState('')
+    const [nikAdd, setNikAdd] = useState('')
     const [emailAdd, setEmailAdd] = useState('')
     const [passwordAdd, setPasswordAdd] = useState('')
+    const [passwordConfirmationAdd, setPasswordConfirmationAdd] = useState('')
     const [imageAdd, setImageAdd] = useState(null)
 
+    /**
+     * Edit Data State
+     * 
+     */
+    const [showEdit, setShowEdit] = useState(false);
     const [employeeObjEdit, setEmployeeObjEdit] = useState('')
     const [imageEdit, setImageEdit] = useState(null)
 
+    /**
+     * Show Data State
+     * 
+     */
+    const [showEmployee, setShowEmployee] = useState(false);
+    const [employeeObj, setEmployeeObj] = useState('')
+
+    /**
+     * Show Calendar State
+     * 
+     */
+    const [showCalendarEmployee, setShowCalendarEmployee] = useState(false);
+    const [employeeCalendar, setEmployeeCalendar] = useState([])
+
+    /**
+     * Data Table
+     * 
+     */
     const columns = [
         {
             name: '#',
@@ -46,7 +79,7 @@ export default function EmployeesPage() {
             name: 'Foto',
             cell: (row) => {
                 return (
-                    <img className="img-fluid wid-80" src={row.photo} alt="User image" />
+                    <img className="py-1 img-fluid wid-80" src={row.photo} alt="User image" />
                 )
             }
         },
@@ -55,8 +88,12 @@ export default function EmployeesPage() {
             selector: row => row.name,
         },
         {
+            name: 'Cabang',
+            selector: row => 'Nama Cabang',
+        },
+        {
             name: 'Jabatan',
-            selector: row => row.name,
+            selector: row => 'Nama Jabatan',
         },
         {
             name: 'email',
@@ -74,12 +111,15 @@ export default function EmployeesPage() {
             cell: (row) => {
                 return (
                     <div className='d-flex justify-content-center align-items-center'>
-                        <button className='mr-1 btn btn-sm btn-success' onClick={() => {
+                        <button className='mr-1 btn btn-sm btn-info' onClick={() => {
                             handleShowCalendarEmployee(row)
                         }}><SearchAlt2 className='mr-1' />Lihat Absen</button>
-                        <button className='btn btn-sm btn-primary' onClick={() => {
+                        <button className='btn btn-sm btn-primary mr-1' onClick={() => {
                             handleShowEdit(row)
                         }}><Edit className='mr-1' />Edit</button>
+                        <button className='btn btn-sm btn-success' onClick={() => {
+                            handleShowEmployee(row)
+                        }}><Detail className='mr-1' />Lihat</button>
                         <button className='btn btn-sm btn-danger mx-1' onClick={() => {
                             handleDeleteData(row.uuid)
                         }}><Trash className='mr-1' />Hapus</button>
@@ -89,11 +129,20 @@ export default function EmployeesPage() {
         }
     ];
 
+    /**
+     * First Render
+     * 
+     */
     useEffect(() => {
         loadMainData()
         loadJobs()
+        loadBranches()
     }, [])
 
+    /**
+     * Show Calendar Func
+     * 
+     */
     const handleShowCalendarEmployee = (employee) => {
         // axios.get(APP_CONFIG.API_URL + `calendar?date=${DateUtil.getCurrentYear()}-${DateUtil.getCurrentMonth()}&employee_uuid=${employee.uuid}`, {
         //     headers: {
@@ -108,10 +157,14 @@ export default function EmployeesPage() {
         setShowCalendarEmployee(employee)
     }
 
-    const handleCloseShowModalEmployee = () => {
+    const handleCloseShowModalCalendarEmployee = () => {
         setShowCalendarEmployee(false)
     }
 
+    /**
+     * Main Data Func
+     * 
+     */
     const loadJobs = () => {
         axios.get(APP_CONFIG.API_URL + 'job-positions', {
             headers: {
@@ -119,6 +172,18 @@ export default function EmployeesPage() {
             }
         }).then((res) => {
             setJobs(res.data.data.jobPositions)
+        }).catch((err) => {
+            ResponseHandler.errorHandler(err)
+        })
+    }
+
+    const loadBranches = () => {
+        axios.get(APP_CONFIG.API_URL + 'branches', {
+            headers: {
+                Authorization: 'Bearer ' + TokenUtil.getApiToken()
+            }
+        }).then((res) => {
+            setBranches(res.data.data.branches)
         }).catch((err) => {
             ResponseHandler.errorHandler(err)
         })
@@ -137,15 +202,12 @@ export default function EmployeesPage() {
 
     }
 
+    /**
+     * Create Data Func
+     * 
+     */
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
-    const handleCloseEdit = () => setShowEdit(false);
-    const handleShowEdit = (employee) => {
-        setEmployeeObjEdit(employee)
-        setShowEdit(true)
-    };
-
     const handleSaveData = () => {
         const formData = new FormData()
 
@@ -153,8 +215,11 @@ export default function EmployeesPage() {
         formData.append('name', nameAdd)
         formData.append('email', emailAdd)
         formData.append('password', passwordAdd)
-        formData.append('password_confirmation', '12345678')
+        formData.append('password_confirmation', passwordConfirmationAdd)
         formData.append('photo', imageAdd)
+        formData.append('nik', nikAdd)
+        formData.append('whatsapp_number', whatsappNumberAdd)
+        formData.append('branch_uuid', branchUuid)
 
         axios.post(APP_CONFIG.API_URL + 'employees', formData, {
             headers: {
@@ -165,21 +230,53 @@ export default function EmployeesPage() {
             handleClose();
             ResponseHandler.successHandler(res)
             loadMainData()
+
+            setJobPositionUuid('')
+            setNameAdd('')
+            setEmailAdd('')
+            setPasswordAdd('')
+            setPasswordConfirmationAdd('')
+            setImageAdd(null)
+            setNikAdd('')
+            setWhatsappNumberAdd('')
+            setBranchUuid('')
         }).catch((err) => {
             ResponseHandler.errorHandler(err)
         })
     }
 
+    /**
+     * Show Data Func
+     * 
+     */
+    const handleCloseEmployee = () => setShowEmployee(false)
+    const handleShowEmployee = (employee) => {
+        setEmployeeObj(employee)
+        setShowEmployee(true)
+    }
+
+    /**
+     * Edit Data Func
+     * 
+     */
+    const handleCloseEdit = () => setShowEdit(false);
+    const handleShowEdit = (employee) => {
+        setEmployeeObjEdit(employee)
+        setShowEdit(true)
+    };
     const handleUpdateData = () => {
         const formData = new FormData()
 
+        formData.append('branch_uuid', employeeObjEdit.branch_uuid)
         formData.append('job_position_uuid', employeeObjEdit.job_position_uuid)
         formData.append('name', employeeObjEdit.name)
         formData.append('email', employeeObjEdit.email)
+        formData.append('nik', employeeObjEdit.nik)
+        formData.append('whatsapp_number', employeeObjEdit.whatsapp_number)
 
         if (employeeObjEdit.password) {
-            formData.append('password', '12345678')
-            formData.append('password_confirmation', '12345678')
+            formData.append('password', employeeObjEdit.password ? employeeObjEdit.password : '')
+            formData.append('password_confirmation', employeeObjEdit.password_confirmation ? employeeObjEdit.password_confirmation : '')
         }
 
         if (imageEdit) {
@@ -195,11 +292,18 @@ export default function EmployeesPage() {
             ResponseHandler.successHandler(res)
             handleCloseEdit();
             loadMainData()
+
+            setEmployeeObjEdit({})
+            setImageEdit(null)
         }).catch((err) => {
             ResponseHandler.errorHandler(err)
         })
     }
 
+    /**
+     * Delete Data Func
+     * 
+     */
     const handleDeleteData = (uuid) => {
         Swal.fire({
             title: 'Apakah anda yakin?',
@@ -225,9 +329,23 @@ export default function EmployeesPage() {
         })
     }
 
+    /**
+     * UI Render
+     * 
+     */
     const _renderChooseJobPositions = () => {
         if (jobs) {
             return jobs.map((e) => {
+                return (
+                    <option value={e.uuid}>{e.name}</option>
+                )
+            })
+        }
+    }
+
+    const _renderChooseBranches = () => {
+        if (branches) {
+            return branches.map((e) => {
                 return (
                     <option value={e.uuid}>{e.name}</option>
                 )
@@ -256,35 +374,62 @@ export default function EmployeesPage() {
             <h3 className='mt-3 mt-lg-5 mb-3'>List Karyawan</h3>
 
             {/* Modal Create Data  */}
-            <Modal show={show} onHide={handleClose} size="lg">
+            <Modal show={show} onHide={handleClose} size="xl">
                 <Modal.Header>
                     <Modal.Title>Tambah Karyawan</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Jabatan</Form.Label>
-                            <Form.Select aria-label="Default select example" value={jobPositionUuid} onChange={(e) => { setJobPositionUuid(e.target.value) }}>
-                                <option selected value={''} disabled>Pilih Jabatan</option>
-                                {_renderChooseJobPositions()}
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Nama Karyawan</Form.Label>
-                            <Form.Control type="text" placeholder="Nama Karyawan" onChange={(event) => { setNameAdd(event.target.value) }} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" placeholder="Email" autoComplete='off' onChange={(event) => { setEmailAdd(event.target.value) }} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" autoComplete='off' onChange={(event) => { setPasswordAdd(event.target.value) }} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Foto</Form.Label>
-                            <Form.Control type="file" onChange={(event) => { setImageAdd(event.target.files[0]) }} />
-                        </Form.Group>
+                        <div className="row">
+                            <div className="col-lg-6">
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Cabang</Form.Label>
+                                    <Form.Select aria-label="Pilih Cabang" value={branchUuid} onChange={(e) => { setBranchUuid(e.target.value) }}>
+                                        <option selected value={''} disabled>Pilih Cabang</option>
+                                        {_renderChooseBranches()}
+                                    </Form.Select>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Jabatan</Form.Label>
+                                    <Form.Select aria-label="Pilih Jabatan" value={jobPositionUuid} onChange={(e) => { setJobPositionUuid(e.target.value) }}>
+                                        <option selected value={''} disabled>Pilih Jabatan</option>
+                                        {_renderChooseJobPositions()}
+                                    </Form.Select>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Nama Karyawan</Form.Label>
+                                    <Form.Control type="text" placeholder="Nama Karyawan" value={nameAdd} onChange={(event) => { setNameAdd(event.target.value) }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>NIK</Form.Label>
+                                    <Form.Control type="text" placeholder="NIK" value={nikAdd} onChange={(event) => { setNikAdd(event.target.value) }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Nomor Whatsapp</Form.Label>
+                                    <Form.Control type="text" placeholder="Nomor Whatsapp" autoComplete='off' value={whatsappNumberAdd} name='whatsapp_number' onChange={(event) => { setWhatsappNumberAdd(event.target.value) }} />
+                                </Form.Group>
+                            </div>
+                            <div className="col-lg-6">
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Email</Form.Label>
+                                    <Form.Control type="email" placeholder="Email" autoComplete='off' name='email' value={emailAdd} onChange={(event) => { setEmailAdd(event.target.value) }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control type="password" placeholder="Password" value={passwordAdd} autoComplete='off' onChange={(event) => { setPasswordAdd(event.target.value) }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Password Konfirmasi</Form.Label>
+                                    <Form.Control type="password" placeholder="Password Konfirmasi" value={passwordConfirmationAdd} autoComplete='off' onChange={(event) => { setPasswordConfirmationAdd(event.target.value) }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Foto</Form.Label>
+                                    <br />
+                                    <img src={imageAdd ? URL.createObjectURL(imageAdd) : require('./../../assets/images/samples/no-photo.png')} alt="image" style={{ width: 100, marginBottom: 10 }} />
+                                    <Form.Control type="file" accept='image/*' onChange={(event) => { setImageAdd(event.target.files[0]) }} />
+                                </Form.Group>
+                            </div>
+                        </div>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
@@ -298,8 +443,58 @@ export default function EmployeesPage() {
             </Modal>
             {/* End of Modal Create Data */}
 
+            {/* Modal Show Data  */}
+            <Modal show={showEmployee} onHide={handleCloseEmployee} size="md">
+                <Modal.Header>
+                    <Modal.Title>Tambah Karyawan</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className='d-flex justify-content-center'>
+                        <img src={employeeObj.photo ? employeeObj.photo : require('./../../assets/images/samples/no-photo.png')} alt="photo" style={{ width: 200 }} />
+                    </div>
+                    <table className='mt-4 table'>
+                        <tr>
+                            <th>NIK</th>
+                            <th>:</th>
+                            <td>{employeeObj.nik}</td>
+                        </tr>
+                        <tr>
+                            <th>Nama</th>
+                            <th>:</th>
+                            <td>{employeeObj.name}</td>
+                        </tr>
+                        <tr>
+                            <th>Cabang</th>
+                            <th>:</th>
+                            <td>{employeeObj.branch_uuid}</td>
+                        </tr>
+                        <tr>
+                            <th>Jabatan</th>
+                            <th>:</th>
+                            <td>{employeeObj.job_position_uuid}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <th>:</th>
+                            <td>{employeeObj.email}</td>
+                        </tr>
+                        <tr>
+                            <th>Nomor Whatsapp</th>
+                            <th>:</th>
+                            <td>{employeeObj.whatsapp_number}</td>
+                        </tr>
+                    </table>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseEmployee}>
+                        Tutup
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* End of Modal Show Data */}
+
             {/* Modal Show Calendar Employee  */}
-            <Modal show={showCalendarEmployee} onHide={handleClose} size="md">
+            <Modal show={showCalendarEmployee} onHide={handleCloseShowModalCalendarEmployee} size="md">
                 <Modal.Header>
                     <Modal.Title>Absen Karyawan</Modal.Title>
                 </Modal.Header>
@@ -307,7 +502,7 @@ export default function EmployeesPage() {
                     <Calendar />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseShowModalEmployee}>
+                    <Button variant="secondary" onClick={handleCloseShowModalCalendarEmployee}>
                         Tutup
                     </Button>
                 </Modal.Footer>
@@ -315,63 +510,119 @@ export default function EmployeesPage() {
             {/* End of Modal Show Calendar Employee */}
 
             {/* Modal Edit Data  */}
-            <Modal show={showEdit} onHide={handleCloseEdit} size="lg">
+            <Modal show={showEdit} onHide={handleCloseEdit} size="xl">
                 <Modal.Header>
                     <Modal.Title>Edit Karyawan</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Jabatan</Form.Label>
-                            <Form.Select aria-label="Default select example" value={employeeObjEdit.job_position_uuid} onChange={(e) => {
-                                setEmployeeObjEdit(() => {
-                                    let obj = Object.assign({}, employeeObjEdit)
-                                    obj.job_position_uuid = e.target.value
+                        <div className="row">
+                            <div className="col-lg-6">
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Cabang</Form.Label>
+                                    <Form.Select aria-label="Default select example" value={employeeObjEdit.branch_uuid} onChange={(e) => {
+                                        setEmployeeObjEdit(() => {
+                                            let obj = Object.assign({}, employeeObjEdit)
+                                            obj.branch_uuid = e.target.value
 
-                                    return obj
-                                })
-                            }}>
-                                <option selected value={''} disabled>Pilih Jabatan</option>
-                                {_renderChooseJobPositions()}
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Nama Karyawan</Form.Label>
-                            <Form.Control type="text" placeholder="Nama Karyawan" value={employeeObjEdit.name} onChange={(event) => {
-                                setEmployeeObjEdit(() => {
-                                    let obj = Object.assign({}, employeeObjEdit)
-                                    obj.name = event.target.value
+                                            return obj
+                                        })
+                                    }}>
+                                        <option selected value={''} disabled>Pilih Cabang</option>
+                                        {_renderChooseBranches()}
+                                    </Form.Select>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Jabatan</Form.Label>
+                                    <Form.Select aria-label="Default select example" value={employeeObjEdit.job_position_uuid} onChange={(e) => {
+                                        setEmployeeObjEdit(() => {
+                                            let obj = Object.assign({}, employeeObjEdit)
+                                            obj.job_position_uuid = e.target.value
 
-                                    return obj
-                                })
-                            }} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" placeholder="Email" value={employeeObjEdit.email} autoComplete='off' onChange={(event) => {
-                                setEmployeeObjEdit(() => {
-                                    let obj = Object.assign({}, employeeObjEdit)
-                                    obj.email = event.target.value
+                                            return obj
+                                        })
+                                    }}>
+                                        <option selected value={''} disabled>Pilih Jabatan</option>
+                                        {_renderChooseJobPositions()}
+                                    </Form.Select>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Nama Karyawan</Form.Label>
+                                    <Form.Control type="text" placeholder="Nama Karyawan" value={employeeObjEdit.name} onChange={(event) => {
+                                        setEmployeeObjEdit(() => {
+                                            let obj = Object.assign({}, employeeObjEdit)
+                                            obj.name = event.target.value
 
-                                    return obj
-                                })
-                            }} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" autoComplete='off' onChange={(event) => {
-                                setEmployeeObjEdit(() => {
-                                    let obj = Object.assign({}, employeeObjEdit)
-                                    obj.password = event.target.value
+                                            return obj
+                                        })
+                                    }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>NIK</Form.Label>
+                                    <Form.Control type="text" placeholder="NIK" value={employeeObjEdit.nik} onChange={(event) => {
+                                        setEmployeeObjEdit(() => {
+                                            let obj = Object.assign({}, employeeObjEdit)
+                                            obj.nik = event.target.value
 
-                                    return obj
-                                })
-                            }} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Foto</Form.Label>
-                            <Form.Control type="file" onChange={(event) => { setImageEdit(event.target.files[0]) }} />
-                        </Form.Group>
+                                            return obj
+                                        })
+                                    }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Nomor Whatsapp</Form.Label>
+                                    <Form.Control type="text" placeholder="Nomor Whatsapp" value={employeeObjEdit.whatsapp_number} onChange={(event) => {
+                                        setEmployeeObjEdit(() => {
+                                            let obj = Object.assign({}, employeeObjEdit)
+                                            obj.whatsapp_number = event.target.value
+
+                                            return obj
+                                        })
+                                    }} />
+                                </Form.Group>
+                            </div>
+                            <div className="col-lg-6">
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Email</Form.Label>
+                                    <Form.Control type="email" placeholder="Email" value={employeeObjEdit.email} autoComplete='off' onChange={(event) => {
+                                        setEmployeeObjEdit(() => {
+                                            let obj = Object.assign({}, employeeObjEdit)
+                                            obj.email = event.target.value
+
+                                            return obj
+                                        })
+                                    }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control type="password" placeholder="Password" autoComplete='off' onChange={(event) => {
+                                        setEmployeeObjEdit(() => {
+                                            let obj = Object.assign({}, employeeObjEdit)
+                                            obj.password = event.target.value
+
+                                            return obj
+                                        })
+                                    }} />
+                                    <small>Biarkan kosong jika tidak mengubah kata sandi</small>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Password Konfirmasi</Form.Label>
+                                    <Form.Control type="password" placeholder="Password Konfirmasi" autoComplete='off' onChange={(event) => {
+                                        setEmployeeObjEdit(() => {
+                                            let obj = Object.assign({}, employeeObjEdit)
+                                            obj.password_confirmation = event.target.value
+
+                                            return obj
+                                        })
+                                    }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Foto</Form.Label>
+                                    <br />
+                                    <img src={imageEdit ? URL.createObjectURL(imageEdit) : (employeeObjEdit.photo ? employeeObjEdit.photo : require('./../../assets/images/samples/no-photo.png'))} alt="image" style={{ width: 100, marginBottom: 10 }} />
+                                    <Form.Control type="file" accept='image/*' onChange={(event) => { setImageEdit(event.target.files[0]) }} />
+                                </Form.Group>
+                            </div>
+                        </div>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
