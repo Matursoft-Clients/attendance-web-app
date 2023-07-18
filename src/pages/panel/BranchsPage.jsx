@@ -10,7 +10,6 @@ import DataTable from 'react-data-table-component';
 import { tableCustomStyles } from '../../styles/tableCustomStyles';
 import { ToastContainer } from 'react-toastify';
 import ResponseHandler from '../../utils/ResponseHandler';
-import DateUtil from '../../utils/DateUtil';
 import { Circle, MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -20,31 +19,44 @@ import './../../styles/leafletStyle.css'
 
 export default function BranchsPage() {
 
+    /**
+     * State Modal Create Data
+     * 
+     */
     const [show, setShow] = useState(false);
-    const [showEdit, setShowEdit] = useState(false);
-
-    const [showModalLocation, setShowModalLocation] = useState(false);
-    const [customAttendances, setCustomAttendances] = useState([])
-    const [employees, setEmployees] = useState([])
-    const [startDate, setStartDate] = useState('')
-    const [endDate, setEndDate] = useState('')
-    const [presenceLocationAddress, setPresenceLocationAddress] = useState('')
-    const [employeeUuid, setEmployeeUuid] = useState('')
-    const [latitudeView, setLatitudeView] = useState(0)
-    const [longitudeView, setLongitudeView] = useState(0)
-
-    const [presenceMeterRadius, setPresenceMeterRadius] = useState('')
-
     const [name, setName] = useState('');
     const [code, setCode] = useState('');
     const [address, setAddress] = useState('');
     const [marker, setMarker] = useState([-7.727989, 109.005913])
+    /**
+     * State Main Data
+     * 
+     */
+    const [branches, setBranches] = useState([])
+    const [presenceMeterRadius, setPresenceMeterRadius] = useState('')
+    const markerRef = useRef(null)
 
+    /**
+     * State Modal Edit Data
+     * 
+     */
+    const [showEdit, setShowEdit] = useState(false);
     const [branchObjEdit, setBranchObjEdit] = useState('')
     const [markerEdit, setMarkerEdit] = useState([-7.727989, 109.005913])
 
-    const markerRef = useRef(null)
+    /**
+     * State View Modal Location
+     * 
+     */
+    const [latitudeView, setLatitudeView] = useState(0)
+    const [longitudeView, setLongitudeView] = useState(0)
+    const [showModalLocation, setShowModalLocation] = useState(false);
 
+
+    /**
+     * Func Modal Edit
+     * 
+     */
     const handleCloseEdit = () => setShowEdit(false);
     const handleShowEdit = (employee) => {
         setBranchObjEdit(employee)
@@ -52,6 +64,10 @@ export default function BranchsPage() {
         setShowEdit(true)
     };
 
+    /**
+     * Render Main Data
+     * 
+     */
     const columns = [
         {
             name: '#',
@@ -102,7 +118,7 @@ export default function BranchsPage() {
     useEffect(() => {
         loadSettings()
         loadMainData()
-        loadEmployees()
+
         let DefaultIcon = L.icon({
             iconUrl: icon,
             shadowUrl: iconShadow
@@ -131,32 +147,10 @@ export default function BranchsPage() {
                 Authorization: 'Bearer ' + TokenUtil.getApiToken()
             }
         }).then((res) => {
-            setCustomAttendances(res.data.data.branches)
+            setBranches(res.data.data.branches)
         }).catch((err) => {
             ResponseHandler.errorHandler(err)
         })
-    }
-
-    const loadEmployees = () => {
-        axios.get(APP_CONFIG.API_URL + 'employees', {
-            headers: {
-                Authorization: 'Bearer ' + TokenUtil.getApiToken()
-            }
-        }).then((res) => {
-            setEmployees(res.data.data.employees)
-        }).catch((err) => {
-            ResponseHandler.errorHandler(err)
-        })
-    }
-
-    const _renderChooseKaryawan = () => {
-        if (employees) {
-            return employees.map((e) => {
-                return (
-                    <option value={e.uuid}>{e.name}</option>
-                )
-            })
-        }
     }
 
     const handleClose = () => setShow(false);
@@ -522,7 +516,7 @@ export default function BranchsPage() {
                             <DataTable
                                 customStyles={tableCustomStyles}
                                 columns={columns}
-                                data={customAttendances}
+                                data={branches}
                                 pagination
                             />
                         </div>
