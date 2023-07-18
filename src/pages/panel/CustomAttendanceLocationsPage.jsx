@@ -11,7 +11,7 @@ import { tableCustomStyles } from '../../styles/tableCustomStyles';
 import { ToastContainer } from 'react-toastify';
 import ResponseHandler from '../../utils/ResponseHandler';
 import DateUtil from '../../utils/DateUtil';
-import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
+import { Circle, MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -34,6 +34,7 @@ export default function CustomAttendanceLocationsPage() {
     const [latitudeView, setLatitudeView] = useState(0)
     const [longitudeView, setLongitudeView] = useState(0)
     const markerRef = useRef(null)
+    const [presenceMeterRadius, setPresenceMeterRadius] = useState('')
 
     const columns = [
         {
@@ -92,6 +93,7 @@ export default function CustomAttendanceLocationsPage() {
     useEffect(() => {
         loadMainData()
         loadEmployees()
+        loadSettings()
         let DefaultIcon = L.icon({
             iconUrl: icon,
             shadowUrl: iconShadow
@@ -99,6 +101,20 @@ export default function CustomAttendanceLocationsPage() {
 
         L.Marker.prototype.options.icon = DefaultIcon;
     }, [])
+
+    const loadSettings = () => {
+        axios.get(APP_CONFIG.API_URL + 'settings', {
+            headers: {
+                Authorization: 'Bearer ' + TokenUtil.getApiToken()
+            }
+        }).then((res) => {
+            const settings = res.data.data.settings
+
+            setPresenceMeterRadius(settings.presence_meter_radius)
+        }).catch((err) => {
+            ResponseHandler.errorHandler(err)
+        })
+    }
 
     const loadMainData = () => {
         axios.get(APP_CONFIG.API_URL + 'custom-attendance-locations', {
@@ -263,7 +279,7 @@ export default function CustomAttendanceLocationsPage() {
                                     <Form.Label>Lokasi</Form.Label>
                                     {
                                         show ?
-                                            <MapContainer center={marker} zoom={13} scrollWheelZoom={true}>
+                                            <MapContainer center={marker} zoom={20} scrollWheelZoom={true}>
                                                 <TileLayer
                                                     attribution="Google Maps"
                                                     url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
@@ -272,6 +288,14 @@ export default function CustomAttendanceLocationsPage() {
                                                     <Popup>
                                                         A pretty CSS3 popup. <br /> Easily customizable.
                                                     </Popup>
+                                                    <Circle
+                                                        center={{ lat: marker[0], lng: marker[1] }}
+                                                        fillColor="red"
+                                                        radius={presenceMeterRadius}>
+                                                        <Popup>
+                                                            A pretty CSS3 popup. <br /> Easily customizable.
+                                                        </Popup>
+                                                    </Circle>
                                                 </Marker>
                                             </MapContainer> : <></>
                                     }
@@ -301,7 +325,7 @@ export default function CustomAttendanceLocationsPage() {
                         <Form.Label>Lokasi</Form.Label>
                         {
                             showModalLocation ?
-                                <MapContainer center={[latitudeView, longitudeView]} zoom={13} scrollWheelZoom={true}>
+                                <MapContainer center={[latitudeView, longitudeView]} zoom={20} scrollWheelZoom={true}>
                                     <TileLayer
                                         attribution="Google Maps"
                                         url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
@@ -310,6 +334,14 @@ export default function CustomAttendanceLocationsPage() {
                                         <Popup>
                                             A pretty CSS3 popup. <br /> Easily customizable.
                                         </Popup>
+                                        <Circle
+                                            center={{ lat: latitudeView, lng: longitudeView }}
+                                            fillColor="red"
+                                            radius={presenceMeterRadius}>
+                                            <Popup>
+                                                A pretty CSS3 popup. <br /> Easily customizable.
+                                            </Popup>
+                                        </Circle>
                                     </Marker>
                                 </MapContainer> : <></>
                         }

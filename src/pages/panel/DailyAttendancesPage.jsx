@@ -7,10 +7,13 @@ import { tableCustomStyles } from '../../styles/tableCustomStyles';
 import { ToastContainer } from 'react-toastify';
 import ResponseHandler from '../../utils/ResponseHandler';
 import DateUtil from '../../utils/DateUtil';
+import { CSVLink } from "react-csv";
+import { FiletypeCsv } from '@styled-icons/bootstrap'
 
 export default function DailyAttendancesPage() {
 
     const [dailyAttendances, setDailyAttendances] = useState([])
+    const [arrCSVDownload, setArrCsvDownload] = useState([])
 
     const columns = [
         {
@@ -25,8 +28,16 @@ export default function DailyAttendancesPage() {
             selector: row => row.employee.name,
         },
         {
+            name: 'Jam Absen Masuk',
+            selector: row => row.presence_entry_hour,
+        },
+        {
             name: 'Status Absen Masuk',
             selector: row => row.presence_entry_status,
+        },
+        {
+            name: 'Jam Absen Pulang',
+            selector: row => row.presence_exit_hour,
         },
         {
             name: 'Status Absen Pulang',
@@ -40,8 +51,32 @@ export default function DailyAttendancesPage() {
         }
     ];
 
+    const loadCsvData = () => {
+        if (dailyAttendances) {
+            let arrCSVDownload = [
+                [
+                    'Karyawan', 'Jam Absen Masuk', 'Status Absen Masuk', 'Jam Absen Pulang', 'Status Absen Pulang', 'Tanggal'
+                ]
+            ]
+
+            dailyAttendances.forEach((e) => {
+                arrCSVDownload.push([
+                    e.employee.name,
+                    e.presence_entry_hour,
+                    e.presence_entry_status,
+                    e.presence_exit_hour,
+                    e.presence_exit_status,
+                    e.date,
+                ]);
+            });
+
+            setArrCsvDownload(arrCSVDownload)
+        }
+    }
+
     useEffect(() => {
         loadMainData()
+        loadCsvData()
     }, [])
 
     const loadMainData = () => {
@@ -81,6 +116,12 @@ export default function DailyAttendancesPage() {
                 <div className="col">
                     <div className="card mt-3">
                         <div className="card-body">
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+                                <div className='btn btn-sm btn-success d-flex justify-content-center align-items-center' style={{ gap: '3px' }}>
+                                    <FiletypeCsv />
+                                    <CSVLink filename={"daily-attendance.csv"} data={arrCSVDownload} style={{ color: 'white' }}>Download CSV</CSVLink>
+                                </div>
+                            </div>
                             <DataTable
                                 customStyles={tableCustomStyles}
                                 columns={columns}
