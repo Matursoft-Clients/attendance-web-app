@@ -446,7 +446,7 @@ export default function EmployeesPage() {
             {/* Modal Show Data  */}
             <Modal show={showEmployee} onHide={handleCloseEmployee} size="md">
                 <Modal.Header>
-                    <Modal.Title>Tambah Karyawan</Modal.Title>
+                    <Modal.Title>Detail Karyawan</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className='d-flex justify-content-center'>
@@ -466,12 +466,12 @@ export default function EmployeesPage() {
                         <tr>
                             <th>Cabang</th>
                             <th>:</th>
-                            <td>{employeeObj.branch_uuid}</td>
+                            <td>{employeeObj.branch ? employeeObj.branch.name : ''}</td>
                         </tr>
                         <tr>
                             <th>Jabatan</th>
                             <th>:</th>
-                            <td>{employeeObj.job_position_uuid}</td>
+                            <td>{employeeObj.job_position ? employeeObj.job_position.name : ''}</td>
                         </tr>
                         <tr>
                             <th>Email</th>
