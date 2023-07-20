@@ -8,12 +8,15 @@ import { ToastContainer } from 'react-toastify';
 import ResponseHandler from '../../utils/ResponseHandler';
 import DateUtil from '../../utils/DateUtil';
 import { CSVLink } from "react-csv";
-import { FiletypeCsv } from '@styled-icons/bootstrap'
+import { FiletypeCsv, Filter } from '@styled-icons/bootstrap'
 
 export default function DailyAttendancesPage() {
 
     const [dailyAttendances, setDailyAttendances] = useState([])
     const [arrCSVDownload, setArrCsvDownload] = useState([])
+    const [startDate, setStartDate] = useState(`${DateUtil.formatYmdFromDate(new Date())}`)
+    const [endDate, setEndDate] = useState(`${DateUtil.formatYmdFromDate(new Date())}`)
+    const [status, setStatus] = useState('today')
 
     const columns = [
         {
@@ -83,7 +86,7 @@ export default function DailyAttendancesPage() {
     }, [dailyAttendances])
 
     const loadMainData = () => {
-        axios.get(APP_CONFIG.API_URL + 'daily-attendances?status=today', {
+        axios.get(APP_CONFIG.API_URL + `daily-attendances?status=${status}&start_date=${startDate}&end_date=${endDate}`, {
             headers: {
                 Authorization: 'Bearer ' + TokenUtil.getApiToken()
             }
@@ -119,15 +122,62 @@ export default function DailyAttendancesPage() {
                 <div className="col">
                     <div className="card mt-3">
                         <div className="card-body">
-                            {
-                                dailyAttendances ?
-                                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-                                        <div className='btn btn-sm btn-success d-flex justify-content-center align-items-center' style={{ gap: '3px' }}>
-                                            <FiletypeCsv />
-                                            <CSVLink filename={"daily-attendance.csv"} data={arrCSVDownload} style={{ color: 'white' }}>Download CSV</CSVLink>
+
+                            <div className="row">
+                                <div className="col-lg-6">
+                                    <div className="row">
+                                        <div className="col-lg-3">
+                                            <div className="form-group">
+                                                <label htmlFor="status">Jenis</label>
+                                                <select name="status" defaultValue={status} value={status} onChange={(event) => {
+                                                    setStatus(event.target.value)
+                                                }} id="status" className='form-control'>
+                                                    <option value="today">Hari Ini</option>
+                                                    <option value="date_range">Range Tanggal</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div> : <></>
-                            }
+                                        {
+                                            status == 'date_range' ?
+                                                <>
+                                                    <div className="col-lg-3">
+                                                        <div className="form-group">
+                                                            <label htmlFor="start_date">Tanggal Awal</label>
+                                                            <input type="date" name="start_date" className='form-control' id="start_date" value={startDate} onChange={(event) => {
+                                                                setStartDate(event.target.value)
+                                                            }} />
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-lg-3">
+                                                        <div className="form-group">
+                                                            <label htmlFor="end_date">Tanggal Akhir</label>
+                                                            <input type="date" name="end_date" className='form-control' id="end_date" value={endDate} onChange={(event) => {
+                                                                setEndDate(event.target.value)
+                                                            }} />
+                                                        </div>
+                                                    </div>
+                                                </> : <></>
+                                        }
+                                        <div className="col-lg-3">
+                                            <div className="form-group">
+                                                <label htmlFor="end_date">&nbsp;</label><br />
+                                                <button onClick={() => {
+                                                    loadMainData()
+                                                }} className='btn btn-dark'><Filter /> Filter</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-lg-6">
+                                    <div className='d-flex justify-content-end'>
+                                        <div className='btn btn-sm btn-success ' style={{ gap: '3px' }}>
+                                            <FiletypeCsv />
+                                            <CSVLink filename={`daily_attendance-${status == 'today' ? DateUtil.formatYmdFromDate(new Date()) : `${startDate}~${endDate}`}.csv`} data={arrCSVDownload} style={{ color: 'white' }}>Download CSV</CSVLink>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <DataTable
                                 customStyles={tableCustomStyles}
                                 columns={columns}

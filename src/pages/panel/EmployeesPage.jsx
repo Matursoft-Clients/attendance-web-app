@@ -13,9 +13,7 @@ import { ToastContainer } from 'react-toastify';
 import ResponseHandler from '../../utils/ResponseHandler';
 import DateUtil from '../../utils/DateUtil';
 import { Calendar } from '@mantine/dates';
-import 'react-calendar/dist/Calendar.css';
 import './../../styles/react-calendar.css'
-import 'rc-calendar/assets/index.css';
 import { modals } from '@mantine/modals';
 
 export default function EmployeesPage() {
