@@ -12,9 +12,11 @@ import { tableCustomStyles } from '../../styles/tableCustomStyles';
 import { ToastContainer } from 'react-toastify';
 import ResponseHandler from '../../utils/ResponseHandler';
 import DateUtil from '../../utils/DateUtil';
-import Calendar from 'react-calendar';
+import { Calendar } from '@mantine/dates';
 import 'react-calendar/dist/Calendar.css';
 import './../../styles/react-calendar.css'
+import 'rc-calendar/assets/index.css';
+import { modals } from '@mantine/modals';
 
 export default function EmployeesPage() {
 
@@ -144,15 +146,15 @@ export default function EmployeesPage() {
      * 
      */
     const handleShowCalendarEmployee = (employee) => {
-        // axios.get(APP_CONFIG.API_URL + `calendar?date=${DateUtil.getCurrentYear()}-${DateUtil.getCurrentMonth()}&employee_uuid=${employee.uuid}`, {
-        //     headers: {
-        //         Authorization: 'Bearer ' + TokenUtil.getApiToken()
-        //     }
-        // }).then((res) => {
-        //     setEmployeeCalendar(res.data.data)
-        // }).catch((err) => {
-        //     ResponseHandler.errorHandler(err)
-        // })
+        axios.get(APP_CONFIG.API_URL + `calendar?date=${DateUtil.getCurrentYear()}-${DateUtil.getCurrentMonth()}&employee_uuid=${employee.uuid}`, {
+            headers: {
+                Authorization: 'Bearer ' + TokenUtil.getApiToken()
+            }
+        }).then((res) => {
+            setEmployeeCalendar(res.data.data)
+        }).catch((err) => {
+            ResponseHandler.errorHandler(err)
+        })
 
         setShowCalendarEmployee(employee)
     }
@@ -494,12 +496,103 @@ export default function EmployeesPage() {
             {/* End of Modal Show Data */}
 
             {/* Modal Show Calendar Employee  */}
-            <Modal show={showCalendarEmployee} onHide={handleCloseShowModalCalendarEmployee} size="md">
+            <Modal show={showCalendarEmployee} onHide={handleCloseShowModalCalendarEmployee} size="md" onShow={() => {
+                document.querySelector('button.mantine-CalendarHeader-calendarHeaderLevel').setAttribute('disabled', true)
+            }}>
                 <Modal.Header>
                     <Modal.Title>Absen Karyawan</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Calendar />
+                    <Calendar
+                        previousDisabled={true}
+                        previousIcon={<></>}
+                        previousLabel=''
+
+                        __onDayClick={(event) => {
+
+                            if (event.target.style.paddingLeft) {
+                                let dateDate = event.target.innerText
+
+                                const absenDate = employeeCalendar.find((e, i) => {
+                                    if (e.absen) {
+                                        return e.absen.date == dateDate
+                                    }
+                                })
+
+                                setShowCalendarEmployee(false)
+
+                                modals.open({
+                                    title: 'Detail absensi tanggal ' + absenDate.absen.date,
+                                    children: (
+                                        <table className='table'>
+                                            <tr>
+                                                <th>Absen Masuk</th>
+                                                <th>:</th>
+                                                <td>{absenDate.absen.presence_entry_hour ? absenDate.absen.presence_entry_hour : '-'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Absen Pulang</th>
+                                                <th>:</th>
+                                                <td>{absenDate.absen.presence_exit_hour ? absenDate.absen.presence_exit_hour : '-'}</td>
+                                            </tr>
+                                        </table>
+                                    ),
+                                    centered: true,
+                                });
+                            }
+                        }}
+
+                        renderDay={(dateObj) => {
+                            const dateDate = dateObj.getDate() > 9 ? `${dateObj.getDate()}` : `0${dateObj.getDate()}`;
+
+                            let bgColor = null
+                            let borderColor = null
+                            let component = null
+
+                            const absenDate = employeeCalendar.find((e, i) => {
+                                if (e.absen) {
+                                    return e.absen.date == dateDate
+                                }
+                            })
+
+                            if (absenDate) {
+                                if (absenDate.absen.presence_entry_status == 'on_time' && !absenDate.absen.presence_exit_status) {
+                                    bgColor = '#22c55e'
+                                    borderColor = '#d1d5db'
+                                } else if (absenDate.absen.presence_entry_status == 'on_time' && absenDate.absen.presence_exit_status == 'early') {
+                                    bgColor = '#22c55e'
+                                    borderColor = '#fca5a5'
+                                } else if (absenDate.absen.presence_entry_status == 'late' && absenDate.absen.presence_exit_status == 'early') {
+                                    bgColor = '#dc2626'
+                                    borderColor = '#fca5a5'
+                                } else if (absenDate.absen.presence_entry_status == 'late' && absenDate.absen.presence_exit_status) {
+                                    bgColor = '#dc2626'
+                                    borderColor = '#22c55e'
+                                } else if (absenDate.absen.presence_entry_status == 'late' && !absenDate.absen.presence_exit_status) {
+                                    bgColor = '#dc2626'
+                                    borderColor = '#d1d5db'
+                                } else if (absenDate.absen.presence_entry_status == 'on_time' && absenDate.absen.presence_exit_status == 'on_time') {
+                                    bgColor = '#22c55e'
+                                    borderColor = '#22c55e'
+                                } else if (absenDate.absen.presence_entry_status == 'not_present') {
+                                    bgColor = '#FFFFFF'
+                                    borderColor = '#FFFFFF'
+                                }
+
+                                component = <div style={{ background: borderColor, padding: '5px' }}>
+                                    <div style={{ background: bgColor, paddingLeft: '3px', paddingRight: '3px', color: '#FFF' }}>
+                                        {dateDate}
+                                    </div>
+                                </div>
+                            }
+
+                            return component ? component : dateDate
+                        }}
+
+                        nextDisabled={true}
+                        nextIcon={<></>}
+                        nextLabel=''
+                    />
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseShowModalCalendarEmployee}>

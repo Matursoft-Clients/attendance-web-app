@@ -25,6 +25,7 @@ import EmployeesPage from './pages/panel/EmployeesPage';
 import DailyAttendancesPage from './pages/panel/DailyAttendancesPage';
 import HomePage from './pages/HomePage';
 import BranchsPage from './pages/panel/BranchsPage';
+import { ModalsProvider } from '@mantine/modals';
 
 const router = createBrowserRouter([
     {
@@ -157,7 +158,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <ModalsProvider>
+            <RouterProvider router={router} />
+        </ModalsProvider>
     </React.StrictMode>
 );
 

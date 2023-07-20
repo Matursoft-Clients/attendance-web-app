@@ -1,3 +1,7 @@
-.react-calendar {
+.mantine-Calendar-month {
     width: 100% !important;
+}
+
+.mantine-Calendar-calendarHeader {
+    margin: auto;
 }
