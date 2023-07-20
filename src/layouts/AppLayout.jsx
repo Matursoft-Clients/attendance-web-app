@@ -11,7 +11,7 @@ import axios from "axios";
 import TokenUtil from "../utils/TokenUtil";
 
 export default function AppLayout() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState(true)
     const [user, setUser] = useState({})
     const [settings, setSettings] = useState({})
     const navigate = useNavigate()
@@ -60,7 +60,11 @@ export default function AppLayout() {
 
                         <div className="pc-container">
                             <div className="pcoded-content" style={{ paddingBottom: '15rem' }}>
-                                <Outlet reRenderUser={loadUser} reRenderSettings={loadSettings} />
+                                {
+                                    Object.keys(user).length > 0 && Object.keys(settings).length > 0 ?
+                                        <Outlet reRenderUser={loadUser} reRenderSettings={loadSettings} />
+                                        : <></>
+                                }
                             </div>
                         </div>
                     </> : <></>
