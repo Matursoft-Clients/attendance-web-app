@@ -53,14 +53,14 @@ export default function DailyAttendancesPage() {
 
     const loadCsvData = () => {
         if (dailyAttendances) {
-            let arrCSVDownload = [
+            let arrCSVDownloadTemp = [
                 [
                     'Karyawan', 'Jam Absen Masuk', 'Status Absen Masuk', 'Jam Absen Pulang', 'Status Absen Pulang', 'Tanggal'
                 ]
             ]
 
             dailyAttendances.forEach((e) => {
-                arrCSVDownload.push([
+                arrCSVDownloadTemp.push([
                     e.employee.name,
                     e.presence_entry_hour,
                     e.presence_entry_status,
@@ -70,14 +70,17 @@ export default function DailyAttendancesPage() {
                 ]);
             });
 
-            setArrCsvDownload(arrCSVDownload)
+            setArrCsvDownload(arrCSVDownloadTemp)
         }
     }
 
     useEffect(() => {
         loadMainData()
-        loadCsvData()
     }, [])
+
+    useEffect(() => {
+        loadCsvData()
+    }, [dailyAttendances])
 
     const loadMainData = () => {
         axios.get(APP_CONFIG.API_URL + 'daily-attendances?status=today', {
@@ -116,12 +119,15 @@ export default function DailyAttendancesPage() {
                 <div className="col">
                     <div className="card mt-3">
                         <div className="card-body">
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-                                <div className='btn btn-sm btn-success d-flex justify-content-center align-items-center' style={{ gap: '3px' }}>
-                                    <FiletypeCsv />
-                                    <CSVLink filename={"daily-attendance.csv"} data={arrCSVDownload} style={{ color: 'white' }}>Download CSV</CSVLink>
-                                </div>
-                            </div>
+                            {
+                                dailyAttendances ?
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+                                        <div className='btn btn-sm btn-success d-flex justify-content-center align-items-center' style={{ gap: '3px' }}>
+                                            <FiletypeCsv />
+                                            <CSVLink filename={"daily-attendance.csv"} data={arrCSVDownload} style={{ color: 'white' }}>Download CSV</CSVLink>
+                                        </div>
+                                    </div> : <></>
+                            }
                             <DataTable
                                 customStyles={tableCustomStyles}
                                 columns={columns}

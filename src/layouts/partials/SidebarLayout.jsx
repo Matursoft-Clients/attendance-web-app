@@ -18,12 +18,12 @@ export default function SidebarLayout(props) {
         <nav className="pc-sidebar ">
             <div className="navbar-wrapper">
                 <div className="m-header">
-                    <Link to={"/panel/dashboard"} className="b-brand">
-                        <img src={settings.office_logo ? settings.office_logo : null} alt="logo" style={{ width: '45px' }} className="logo logo-lg" />
-                        <h4 className='text-white'>{settings.office_name}</h4>
+                    <Link to={"/panel/dashboard"} className="b-brand d-flex" style={{ gap: '7px' }}>
+                        <img src={settings.office_logo ? settings.office_logo : null} alt="logo" style={{ width: '35px', height: '35px' }} className="logo logo-lg" />
+                        <h4 className='text-white mt-2'>{settings.office_name}</h4>
                     </Link>
                 </div>
-                <div className="navbar-content">
+                <div className="navbar-content ps ps--active-y">
                     <ul className="pc-navbar">
                         <li className="pc-item pc-caption">
                             <label>Navigation</label>
