@@ -35,7 +35,7 @@ export default function BannersPage() {
             name: 'Banner',
             cell: (row) => {
                 return (
-                    <img className="img-fluid wid-80" src={row.image} alt="User image" />
+                    <img className="py-1 img-fluid wid-80" src={row.image} alt="User image" />
                 )
             }
         },
