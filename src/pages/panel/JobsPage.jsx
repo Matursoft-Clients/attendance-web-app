@@ -39,7 +39,7 @@ export default function JobsPage() {
         {
             name: 'Dibuat Pada',
             selector: (row) => {
-                return DateUtil.formatYmdHisFromDate(row.created_at)
+                return DateUtil.formatReadable(row.created_at)
             },
         },
         {

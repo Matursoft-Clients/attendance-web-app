@@ -11,6 +11,18 @@ const DateUtil = {
 
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     },
+    formatReadable: (date) => {
+        const dateObj = new Date(date)
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        const year = dateObj.getFullYear()
+        const day = dateObj.getDate() > 9 ? dateObj.getDate() : `0` + dateObj.getDate()
+        const hours = dateObj.getHours() > 9 ? dateObj.getHours() : `0` + dateObj.getHours()
+        const minutes = dateObj.getMinutes() > 9 ? dateObj.getMinutes() : `0` + dateObj.getMinutes()
+        const seconds = dateObj.getSeconds() > 9 ? dateObj.getSeconds() : `0` + dateObj.getSeconds()
+
+        return `${day} ${months[dateObj.getMonth()]} ${year} ${hours}:${minutes}:${seconds}`
+    },
     formatYmdFromDate: (date) => {
         const dateObj = new Date(date)
 
