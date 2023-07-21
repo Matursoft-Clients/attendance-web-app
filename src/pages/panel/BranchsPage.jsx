@@ -313,16 +313,12 @@ export default function BranchsPage() {
                                                     url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
                                                 />
                                                 <Marker position={marker} draggable={true} eventHandlers={eventHandlers} ref={markerRef}>
-                                                    <Popup>
-                                                        A pretty CSS3 popup. <br /> Easily customizable.
-                                                    </Popup>
+
                                                     <Circle
                                                         center={{ lat: marker[0], lng: marker[1] }}
                                                         fillColor="red"
                                                         radius={presenceMeterRadius}>
-                                                        <Popup>
-                                                            A pretty CSS3 popup. <br /> Easily customizable.
-                                                        </Popup>
+
                                                     </Circle>
                                                 </Marker>
                                             </MapContainer> : <></>
@@ -420,16 +416,12 @@ export default function BranchsPage() {
                                                     url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
                                                 />
                                                 <Marker position={markerEdit} draggable={true} eventHandlers={eventHandlersEdit} ref={markerRef}>
-                                                    <Popup>
-                                                        A pretty CSS3 popup. <br /> Easily customizable.
-                                                    </Popup>
+
                                                     <Circle
                                                         center={{ lat: markerEdit[0], lng: markerEdit[1] }}
                                                         fillColor="red"
                                                         radius={presenceMeterRadius}>
-                                                        <Popup>
-                                                            A pretty CSS3 popup. <br /> Easily customizable.
-                                                        </Popup>
+
                                                     </Circle>
                                                 </Marker>
                                             </MapContainer> : <></>
@@ -489,7 +481,12 @@ export default function BranchsPage() {
                                         url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
                                     />
                                     <Marker position={[latitudeView, longitudeView]} draggable ondrag={onDragMap}>
+                                        <Circle
+                                            center={{ lat: marker[0], lng: marker[1] }}
+                                            fillColor="red"
+                                            radius={presenceMeterRadius}>
 
+                                        </Circle>
                                     </Marker>
                                 </MapContainer> : <></>
                         }

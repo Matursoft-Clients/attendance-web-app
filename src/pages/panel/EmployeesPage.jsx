@@ -1,5 +1,5 @@
 import { Plus } from '@styled-icons/entypo'
-import { Edit, Trash, Save, Detail } from '@styled-icons/boxicons-solid'
+import { Edit, Trash, Save, Detail, Devices } from '@styled-icons/boxicons-solid'
 import { SearchAlt2 } from '@styled-icons/boxicons-regular'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { useEffect, useState } from 'react';
@@ -105,14 +105,20 @@ export default function EmployeesPage() {
             selector: row => row.email,
         },
         {
-            name: 'Dibuat Pada',
+            name: 'Device ID',
             selector: (row) => {
-                return DateUtil.formatReadable(row.created_at)
+                return row.device_id ? row.device_id : '-'
+            },
+        },
+        {
+            name: 'Device Name',
+            selector: (row) => {
+                return row.device_name ? row.device_name : '-'
             },
         },
         {
             name: 'Aksi',
-            width: '300px',
+            width: '400px',
             cell: (row) => {
                 return (
                     <div className='d-flex justify-content-center align-items-center'>
@@ -128,11 +134,31 @@ export default function EmployeesPage() {
                         <button className='btn btn-sm btn-danger mx-1' onClick={() => {
                             handleDeleteData(row.uuid)
                         }}><Trash className='mr-1' />Hapus</button>
+                        <button className='btn btn-sm btn-dark mx-1' onClick={() => {
+                            handleRefreshDevice(row.uuid)
+                        }}><Devices className='mr-1' />Refresh Device</button>
                     </div>
                 )
             }
         }
     ];
+
+    /**
+     * Handle Refresh Device
+     * 
+     */
+    const handleRefreshDevice = (employee_uuid) => {
+        axios.patch(APP_CONFIG.API_URL + 'employees/refresh-device/' + employee_uuid, {}, {
+            headers: {
+                Authorization: 'Bearer ' + TokenUtil.getApiToken()
+            }
+        }).then((res) => {
+            ResponseHandler.successHandler(res)
+            loadMainData()
+        }).catch((err) => {
+            ResponseHandler.errorHandler(err)
+        })
+    }
 
     /**
      * First Render

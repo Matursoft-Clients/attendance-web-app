@@ -283,16 +283,12 @@ export default function CustomAttendanceLocationsPage() {
                                                     url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
                                                 />
                                                 <Marker position={marker} draggable={true} eventHandlers={eventHandlers} ref={markerRef}>
-                                                    <Popup>
-                                                        A pretty CSS3 popup. <br /> Easily customizable.
-                                                    </Popup>
+
                                                     <Circle
                                                         center={{ lat: marker[0], lng: marker[1] }}
                                                         fillColor="red"
                                                         radius={presenceMeterRadius}>
-                                                        <Popup>
-                                                            A pretty CSS3 popup. <br /> Easily customizable.
-                                                        </Popup>
+
                                                     </Circle>
                                                 </Marker>
                                             </MapContainer> : <></>
@@ -356,9 +352,7 @@ export default function CustomAttendanceLocationsPage() {
                                             center={{ lat: latitudeView, lng: longitudeView }}
                                             fillColor="red"
                                             radius={presenceMeterRadius}>
-                                            <Popup>
-                                                A pretty CSS3 popup. <br /> Easily customizable.
-                                            </Popup>
+
                                         </Circle>
                                     </Marker>
                                 </MapContainer> : <></>
