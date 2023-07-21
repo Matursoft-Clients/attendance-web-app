@@ -43,19 +43,11 @@ export default function SidebarLayout(props) {
                             </NavLink>
                         </li>
                         <li className="pc-item">
-                            <NavLink to={"/panel/profile"} className="pc-link ">
+                            <NavLink to={"/panel/employees"} className="pc-link ">
                                 <span className="pc-micon">
-                                    <User />
+                                    <Users />
                                 </span>
-                                <span className="pc-mtext">Profil</span>
-                            </NavLink>
-                        </li>
-                        <li className="pc-item">
-                            <NavLink to={"/panel/announcements"} className="pc-link ">
-                                <span className="pc-micon">
-                                    <Send />
-                                </span>
-                                <span className="pc-mtext">Pengumuman</span>
+                                <span className="pc-mtext">Karyawan</span>
                             </NavLink>
                         </li>
                         <li className="pc-item">
@@ -64,6 +56,22 @@ export default function SidebarLayout(props) {
                                     <Briefcase />
                                 </span>
                                 <span className="pc-mtext">Jabatan</span>
+                            </NavLink>
+                        </li>
+                        <li className="pc-item">
+                            <NavLink to={"/panel/branchs"} className="pc-link ">
+                                <span className="pc-micon">
+                                    <Airplay />
+                                </span>
+                                <span className="pc-mtext">Cabang</span>
+                            </NavLink>
+                        </li>
+                        <li className="pc-item">
+                            <NavLink to={"/panel/announcements"} className="pc-link ">
+                                <span className="pc-micon">
+                                    <Send />
+                                </span>
+                                <span className="pc-mtext">Pengumuman</span>
                             </NavLink>
                         </li>
                         <li className="pc-item">
@@ -83,19 +91,11 @@ export default function SidebarLayout(props) {
                             </NavLink>
                         </li>
                         <li className="pc-item">
-                            <NavLink to={"/panel/branchs"} className="pc-link ">
+                            <NavLink to={"/panel/profile"} className="pc-link ">
                                 <span className="pc-micon">
-                                    <Airplay />
+                                    <User />
                                 </span>
-                                <span className="pc-mtext">Cabang</span>
-                            </NavLink>
-                        </li>
-                        <li className="pc-item">
-                            <NavLink to={"/panel/employees"} className="pc-link ">
-                                <span className="pc-micon">
-                                    <Users />
-                                </span>
-                                <span className="pc-mtext">Karyawan</span>
+                                <span className="pc-mtext">Profil</span>
                             </NavLink>
                         </li>
                         <li className="pc-item">
