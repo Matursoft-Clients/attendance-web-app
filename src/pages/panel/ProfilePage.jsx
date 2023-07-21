@@ -134,7 +134,7 @@ export default function ProfilePage() {
                                     <div>
                                         <img src={photo ? URL.createObjectURL(photo) : (user.photo ? user.photo : avatar)} alt="" className='img-thumbnail' width={'100px'} />
                                     </div>
-                                    <label htmlFor="email" className='mt-2'>Avatar</label>
+                                    <label htmlFor="email" className='mt-2'>Foto</label>
                                     <input type="file" accept='image/*' name="avatar" id="avatar" className='form-control' placeholder='Avatar' onChange={(event) => { setPhoto(event.target.files[0]) }} />
                                 </div>
                                 <div className="form-group">
