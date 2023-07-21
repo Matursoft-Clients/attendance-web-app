@@ -489,9 +489,7 @@ export default function BranchsPage() {
                                         url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
                                     />
                                     <Marker position={[latitudeView, longitudeView]} draggable ondrag={onDragMap}>
-                                        <Popup>
-                                            A pretty CSS3 popup. <br /> Easily customizable.
-                                        </Popup>
+
                                     </Marker>
                                 </MapContainer> : <></>
                         }

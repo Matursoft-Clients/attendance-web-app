@@ -298,6 +298,28 @@ export default function CustomAttendanceLocationsPage() {
                                             </MapContainer> : <></>
                                     }
                                 </Form.Group>
+                                <div className="row mt-3">
+                                    <div className="col-md-6">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Latitude</Form.Label>
+                                            <Form.Control type="number" placeholder='Latitude' value={marker[0]} onChange={(event) => {
+                                                if (event.target.value && event.target.value != '-') {
+                                                    setMarker([event.target.value, marker[1]])
+                                                }
+                                            }} />
+                                        </Form.Group>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Longitude</Form.Label>
+                                            <Form.Control type="number" placeholder='Longitude' value={marker[1]} onChange={(event) => {
+                                                if (event.target.value && event.target.value != '-') {
+                                                    setMarker([marker[0], event.target.value])
+                                                }
+                                            }} />
+                                        </Form.Group>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </Form>
@@ -328,10 +350,8 @@ export default function CustomAttendanceLocationsPage() {
                                         attribution="Google Maps"
                                         url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
                                     />
-                                    <Marker position={[latitudeView, longitudeView]} draggable ondrag={onDragMap}>
-                                        <Popup>
-                                            A pretty CSS3 popup. <br /> Easily customizable.
-                                        </Popup>
+                                    <Marker position={[latitudeView, longitudeView]} ondrag={onDragMap}>
+
                                         <Circle
                                             center={{ lat: latitudeView, lng: longitudeView }}
                                             fillColor="red"
