@@ -552,26 +552,23 @@ export default function EmployeesPage() {
                             })
 
                             if (absenDate) {
-                                if (absenDate.absen.presence_entry_status == 'on_time' && !absenDate.absen.presence_exit_status) {
+                                if (absenDate.absen.presence_entry_status == 'on_time') {
                                     bgColor = '#22c55e'
-                                    borderColor = '#d1d5db'
-                                } else if (absenDate.absen.presence_entry_status == 'on_time' && absenDate.absen.presence_exit_status == 'early') {
+                                } else if (absenDate.absen.presence_entry_status == 'late') {
                                     bgColor = '#22c55e'
-                                    borderColor = '#fca5a5'
-                                } else if (absenDate.absen.presence_entry_status == 'late' && absenDate.absen.presence_exit_status == 'early') {
-                                    bgColor = '#dc2626'
-                                    borderColor = '#fca5a5'
-                                } else if (absenDate.absen.presence_entry_status == 'late' && absenDate.absen.presence_exit_status) {
-                                    bgColor = '#dc2626'
-                                    borderColor = '#22c55e'
-                                } else if (absenDate.absen.presence_entry_status == 'late' && !absenDate.absen.presence_exit_status) {
-                                    bgColor = '#dc2626'
-                                    borderColor = '#d1d5db'
-                                } else if (absenDate.absen.presence_entry_status == 'on_time' && absenDate.absen.presence_exit_status == 'on_time') {
-                                    bgColor = '#22c55e'
-                                    borderColor = '#22c55e'
                                 } else if (absenDate.absen.presence_entry_status == 'not_present') {
                                     bgColor = '#FFFFFF'
+                                } else if (absenDate.absen.presence_entry_status == 'not_valid') {
+                                    bgColor = '#FFFFFF'
+                                }
+
+                                if (!absenDate.absen.presence_exit_status) {
+                                    borderColor = '#d1d5db'
+                                } else if (absenDate.absen.presence_exit_status == 'early') {
+                                    borderColor = '#fca5a5'
+                                } else if (absenDate.absen.presence_exit_status == 'on_time') {
+                                    borderColor = '#22c55e'
+                                } else if (absenDate.absen.presence_exit_status == 'not_present') {
                                     borderColor = '#FFFFFF'
                                 }
 
