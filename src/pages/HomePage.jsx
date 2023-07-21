@@ -2,10 +2,26 @@ import './../assets/landing/css/style.css'
 import './../assets/landing/css/responsive.css'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import APP_CONFIG from '../utils/APP_CONFIG'
 
 export default function HomePage() {
 
+    const [settings, setSettings] = useState({})
     const navigate = useNavigate()
+
+    useEffect(() => {
+        loadSettings()
+    }, [])
+
+    const loadSettings = () => {
+        axios.get(APP_CONFIG.API_URL + 'settings', {})
+            .then((res) => {
+                setSettings(res.data.data.settings)
+            }).catch((err) => {
+                console.log(err)
+            })
+    }
 
     return (
         <div>
@@ -18,7 +34,7 @@ export default function HomePage() {
                                     <div className="full">
                                         <div className="center-desk">
                                             <div className="logo">
-                                                <a href="#"><img src={require('./../assets/images/logo/logo.png')} style={{ width: 50 }} alt="#" /></a>
+                                                <a href="#"><img src={settings.office_logo ? settings.office_logo : require('./../assets/images/samples/no-image.jpg')} style={{ width: 50 }} alt="#" /></a>
                                             </div>
                                         </div>
                                     </div>

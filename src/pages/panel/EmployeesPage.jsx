@@ -36,6 +36,7 @@ export default function EmployeesPage() {
     const [nameAdd, setNameAdd] = useState('')
     const [whatsappNumberAdd, setWhatsappNumberAdd] = useState('')
     const [nikAdd, setNikAdd] = useState('')
+    const [nrpAdd, setNrpAdd] = useState('')
     const [emailAdd, setEmailAdd] = useState('')
     const [passwordAdd, setPasswordAdd] = useState('')
     const [passwordConfirmationAdd, setPasswordConfirmationAdd] = useState('')
@@ -79,9 +80,13 @@ export default function EmployeesPage() {
             name: 'Foto',
             cell: (row) => {
                 return (
-                    <img className="py-1 img-fluid wid-80" src={row.photo} alt="User image" />
+                    <img className="py-1 img-fluid wid-70" src={row.photo} alt="User image" />
                 )
             }
+        },
+        {
+            name: 'NRP',
+            selector: row => row.nrp,
         },
         {
             name: 'Nama',
@@ -218,6 +223,7 @@ export default function EmployeesPage() {
         formData.append('password_confirmation', passwordConfirmationAdd)
         formData.append('photo', imageAdd)
         formData.append('nik', nikAdd)
+        formData.append('nrp', nrpAdd)
         formData.append('whatsapp_number', whatsappNumberAdd)
         formData.append('branch_uuid', branchUuid)
 
@@ -238,6 +244,7 @@ export default function EmployeesPage() {
             setPasswordConfirmationAdd('')
             setImageAdd(null)
             setNikAdd('')
+            setNrpAdd('')
             setWhatsappNumberAdd('')
             setBranchUuid('')
         }).catch((err) => {
@@ -272,6 +279,7 @@ export default function EmployeesPage() {
         formData.append('name', employeeObjEdit.name)
         formData.append('email', employeeObjEdit.email)
         formData.append('nik', employeeObjEdit.nik)
+        formData.append('nrp', employeeObjEdit.nrp)
         formData.append('whatsapp_number', employeeObjEdit.whatsapp_number)
 
         if (employeeObjEdit.password) {
@@ -400,7 +408,11 @@ export default function EmployeesPage() {
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>NIK</Form.Label>
-                                    <Form.Control type="text" placeholder="NIK" value={nikAdd} onChange={(event) => { setNikAdd(event.target.value) }} />
+                                    <Form.Control type="number" placeholder="NIK" value={nikAdd} onChange={(event) => { setNikAdd(event.target.value) }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>NRP</Form.Label>
+                                    <Form.Control type="text" placeholder="NRP" value={nrpAdd} onChange={(event) => { setNrpAdd(event.target.value) }} />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Nomor Whatsapp</Form.Label>
@@ -455,6 +467,11 @@ export default function EmployeesPage() {
                             <th>NIK</th>
                             <th>:</th>
                             <td>{employeeObj.nik}</td>
+                        </tr>
+                        <tr>
+                            <th>NRP</th>
+                            <th>:</th>
+                            <td>{employeeObj.nrp}</td>
                         </tr>
                         <tr>
                             <th>Nama</th>
@@ -649,6 +666,17 @@ export default function EmployeesPage() {
                                         setEmployeeObjEdit(() => {
                                             let obj = Object.assign({}, employeeObjEdit)
                                             obj.nik = event.target.value
+
+                                            return obj
+                                        })
+                                    }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>NRP</Form.Label>
+                                    <Form.Control type="number" placeholder="NRP" value={employeeObjEdit.nrp} onChange={(event) => {
+                                        setEmployeeObjEdit(() => {
+                                            let obj = Object.assign({}, employeeObjEdit)
+                                            obj.nrp = event.target.value
 
                                             return obj
                                         })
