@@ -32,19 +32,19 @@ export default function DailyAttendancesPage() {
         },
         {
             name: 'Jam Absen Masuk',
-            selector: row => row.presence_entry_hour,
+            selector: row => row.presence_entry_hour ? row.presence_entry_hour : '-',
         },
         {
             name: 'Status Absen Masuk',
-            selector: row => row.presence_entry_status,
+            selector: row => row.presence_entry_status ? row.presence_entry_status.replace('_', ' ').replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) : '-',
         },
         {
             name: 'Jam Absen Pulang',
-            selector: row => row.presence_exit_hour,
+            selector: row => row.presence_exit_hour ? row.presence_exit_hour : '-',
         },
         {
             name: 'Status Absen Pulang',
-            selector: row => row.presence_exit_status ? row.presence_exit_status : 'Belum Pulang',
+            selector: row => row.presence_exit_status ? row.presence_exit_status.replace('_', ' ').replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) : '-',
         },
         {
             name: 'Tanggal',
