@@ -171,8 +171,9 @@ export default function DailyAttendancesPage() {
                                 <div className="col-lg-6">
                                     <div className='d-flex justify-content-end'>
                                         <div className='btn btn-sm btn-success ' style={{ gap: '3px' }}>
-                                            <FiletypeCsv />
-                                            <CSVLink filename={`daily_attendance-${status == 'today' ? DateUtil.formatYmdFromDate(new Date()) : `${startDate}~${endDate}`}.csv`} data={arrCSVDownload} style={{ color: 'white' }}>Download CSV</CSVLink>
+                                            <CSVLink filename={`daily_attendance-${status == 'today' ? DateUtil.formatYmdFromDate(new Date()) : `${startDate}~${endDate}`}.csv`} data={arrCSVDownload} style={{ color: 'white' }}>
+                                                <FiletypeCsv className='mr-1' />
+                                                Download CSV</CSVLink>
                                         </div>
                                     </div>
                                 </div>
