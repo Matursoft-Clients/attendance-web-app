@@ -93,6 +93,9 @@ export default function BannersPage() {
             handleClose();
             ResponseHandler.successHandler(res)
             loadMainData()
+
+            setNameAdd('')
+            setImageAdd(null)
         }).catch((err) => {
             ResponseHandler.errorHandler(err)
         })
@@ -154,7 +157,9 @@ export default function BannersPage() {
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Banner</Form.Label>
-                            <Form.Control type="file" onChange={(event) => { setImageAdd(event.target.files[0]) }} />
+                            <br />
+                            <img src={imageAdd ? URL.createObjectURL(imageAdd) : require('./../../assets/images/samples/no-image.jpg')} alt="image" style={{ width: 100, marginBottom: 10 }} />
+                            <Form.Control type="file" accept='image/*' onChange={(event) => { setImageAdd(event.target.files[0]) }} />
                         </Form.Group>
                     </Form>
                 </Modal.Body>
