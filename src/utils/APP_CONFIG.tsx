@@ -1,5 +1,5 @@
 const APP_CONFIG = {
-    API_URL: 'http://backendwebabsensi.bmtamanahindonesia.com/'
+    API_URL: 'https://backendwebabsensi.bmtamanahindonesia.com/'
 }
 
 export default APP_CONFIG

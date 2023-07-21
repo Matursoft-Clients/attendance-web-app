@@ -34,7 +34,7 @@ export default function HomePage() {
                                     <div className="full">
                                         <div className="center-desk">
                                             <div className="logo">
-                                                <a href="#"><img src={settings.office_logo ? settings.office_logo : require('./../assets/images/samples/no-image.jpg')} style={{ width: 50 }} alt="#" /></a>
+                                                <a href="#"><img src={settings.office_logo} style={{ width: 50 }} alt="#" /></a>
                                             </div>
                                         </div>
                                     </div>
