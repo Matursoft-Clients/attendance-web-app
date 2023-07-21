@@ -116,9 +116,11 @@ export default function DailyAttendancesPage() {
                 </div>
             </div>
 
-            <h3 className='mt-3 mt-lg-5 mb-3'>List Absen Harian</h3>
 
             <div className="row">
+                <div className="col-12">
+                    <h3 className='mt-3 mb-3'>List Absen Harian</h3>
+                </div>
                 <div className="col">
                     <div className="card mt-3">
                         <div className="card-body">

@@ -160,7 +160,6 @@ export default function JobsPage() {
                 </div>
             </div>
 
-            <h3 className='mt-3 mt-lg-5 mb-3'>List Jabatan</h3>
 
             {/* Modal Create Data  */}
             <Modal show={show} onHide={handleClose} size="lg">
@@ -218,6 +217,9 @@ export default function JobsPage() {
             {/* End of Modal Edit Data */}
 
             <div className="row">
+                <div className="col-12">
+                    <h3 className='mt-3 mb-3'>List Jabatan</h3>
+                </div>
                 <div className="col">
                     <button type='button' onClick={handleShow} className="btn btn-success d-flex align-items-center justify-content-center" style={{ gap: '.3rem' }}><Plus /> Tambah Jabatan</button>
 

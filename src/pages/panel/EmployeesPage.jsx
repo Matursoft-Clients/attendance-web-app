@@ -371,8 +371,6 @@ export default function EmployeesPage() {
                 </div>
             </div>
 
-            <h3 className='mt-3 mt-lg-5 mb-3'>List Karyawan</h3>
-
             {/* Modal Create Data  */}
             <Modal show={show} onHide={handleClose} size="xl">
                 <Modal.Header>
@@ -728,6 +726,9 @@ export default function EmployeesPage() {
             {/* End of Modal Edit Data */}
 
             <div className="row">
+                <div className="col-12">
+                    <h3 className='mt-3 mb-3'>List Karyawan</h3>
+                </div>
                 <div className="col">
                     <button type='button' onClick={handleShow} className="btn btn-success d-flex align-items-center justify-content-center" style={{ gap: '.3rem' }}><Plus /> Tambah Karyawan</button>
 

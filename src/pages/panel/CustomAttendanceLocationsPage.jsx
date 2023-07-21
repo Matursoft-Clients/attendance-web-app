@@ -243,8 +243,6 @@ export default function CustomAttendanceLocationsPage() {
                 </div>
             </div>
 
-            <h3 className='mt-3 mt-lg-5 mb-3'>List Lokasi Absen Kustom</h3>
-
             {/* Modal Create Data  */}
             <Modal show={show} onHide={handleClose} size="xl">
                 <Modal.Header>
@@ -356,6 +354,9 @@ export default function CustomAttendanceLocationsPage() {
             {/* End of Modal Show Location */}
 
             <div className="row">
+                <div className="col-12">
+                    <h3 className='mt-3 mb-3'>List Lokasi Absen Kustom</h3>
+                </div>
                 <div className="col">
                     <button type='button' onClick={handleShow} className="btn btn-success d-flex align-items-center justify-content-center" style={{ gap: '.3rem' }}><Plus /> Tambah Lokasi Absen Kustom</button>
 
