@@ -93,7 +93,7 @@ export default function ProfilePage() {
 
                     <div className="card user-card user-card-1">
                         <div className="card-body pb-0">
-                            <div className="media user-about-block align-items-center mt-0 mb-3">
+                            <div className="media user-about-block align-items-center mt-0">
                                 <div className="position-relative w-100 d-inline-block">
                                     <div className='d-flex flex-column align-items-center'>
                                         <img className="img-radius img-fluid wid-80" src={user.photo ? user.photo : avatar} alt="User image" />
