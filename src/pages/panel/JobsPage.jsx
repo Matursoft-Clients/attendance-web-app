@@ -17,7 +17,10 @@ export default function JobsPage() {
     const [show, setShow] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [jobs, setJobs] = useState([])
+
     const [nameAdd, setNameAdd] = useState('')
+    const [codeAdd, setCodeAdd] = useState('')
+
     const [jobObjEdit, setJobObjEdit] = useState('')
 
     const columns = [
@@ -47,9 +50,9 @@ export default function JobsPage() {
             cell: (row) => {
                 return (
                     <div className='d-flex justify-content-center align-items-center'>
-                        {/* <button className='btn btn-sm btn-primary' onClick={() => {
+                        <button className='btn btn-sm btn-primary' onClick={() => {
                             handleShowEdit(row)
-                        }}><Edit className='mr-1' />Edit</button> */}
+                        }}><Edit className='mr-1' />Edit</button>
                         <button className='btn btn-sm btn-danger mx-1' onClick={() => {
                             handleDeleteData(row.uuid)
                         }}><Trash className='mr-1' />Hapus</button>
@@ -88,6 +91,7 @@ export default function JobsPage() {
     const handleSaveData = () => {
         axios.post(APP_CONFIG.API_URL + 'job-positions', {
             name: nameAdd,
+            code: codeAdd,
         }, {
             headers: {
                 Authorization: 'Bearer ' + TokenUtil.getApiToken()
@@ -103,7 +107,8 @@ export default function JobsPage() {
 
     const handleUpdateData = () => {
         axios.patch(APP_CONFIG.API_URL + `job-positions/${jobObjEdit.uuid}`, {
-            title: jobObjEdit.title,
+            name: jobObjEdit.name,
+            code: jobObjEdit.code,
         }, {
             headers: {
                 Authorization: 'Bearer ' + TokenUtil.getApiToken()
@@ -172,6 +177,10 @@ export default function JobsPage() {
                             <Form.Label>Nama Jabatan</Form.Label>
                             <Form.Control type="text" placeholder="Nama Jabatan" onChange={(event) => { setNameAdd(event.target.value) }} />
                         </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Kode Jabatan</Form.Label>
+                            <Form.Control type="text" placeholder="Kode Jabatan" onChange={(event) => { setCodeAdd(event.target.value) }} />
+                        </Form.Group>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
@@ -198,6 +207,17 @@ export default function JobsPage() {
                                 setJobObjEdit(() => {
                                     let obj = Object.assign({}, jobObjEdit)
                                     obj.name = event.target.value
+
+                                    return obj
+                                })
+                            }} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Kode Jabatan</Form.Label>
+                            <Form.Control type="text" placeholder="Kode Jabatan" value={jobObjEdit.code} onChange={(event) => {
+                                setJobObjEdit(() => {
+                                    let obj = Object.assign({}, jobObjEdit)
+                                    obj.code = event.target.value
 
                                     return obj
                                 })
