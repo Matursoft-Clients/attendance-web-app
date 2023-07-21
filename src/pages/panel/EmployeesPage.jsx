@@ -555,11 +555,11 @@ export default function EmployeesPage() {
                                 if (absenDate.absen.presence_entry_status == 'on_time') {
                                     bgColor = '#22c55e'
                                 } else if (absenDate.absen.presence_entry_status == 'late') {
-                                    bgColor = '#22c55e'
+                                    bgColor = '#dc2626'
                                 } else if (absenDate.absen.presence_entry_status == 'not_present') {
                                     bgColor = '#FFFFFF'
                                 } else if (absenDate.absen.presence_entry_status == 'not_valid') {
-                                    bgColor = '#FFFFFF'
+                                    bgColor = '#000000'
                                 }
 
                                 if (!absenDate.absen.presence_exit_status) {
