@@ -434,7 +434,7 @@ export default function BranchsPage() {
                                             <Form.Label>Latitude</Form.Label>
                                             <Form.Control type="number" placeholder='Latitude' value={markerEdit[0]} onChange={(event) => {
                                                 if (event.target.value && event.target.value != '-') {
-                                                    setMarker([event.target.value, marker[1]])
+                                                    setMarkerEdit([event.target.value, markerEdit[1]])
                                                 }
                                             }} />
                                         </Form.Group>
@@ -444,7 +444,7 @@ export default function BranchsPage() {
                                             <Form.Label>Longitude</Form.Label>
                                             <Form.Control type="number" placeholder='Longitude' value={markerEdit[1]} onChange={(event) => {
                                                 if (event.target.value && event.target.value != '-') {
-                                                    setMarker([marker[0], event.target.value])
+                                                    setMarkerEdit([markerEdit[0], event.target.value])
                                                 }
                                             }} />
                                         </Form.Group>
@@ -480,12 +480,11 @@ export default function BranchsPage() {
                                         attribution="Google Maps"
                                         url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
                                     />
-                                    <Marker position={[latitudeView, longitudeView]} draggable ondrag={onDragMap}>
+                                    <Marker position={[latitudeView, longitudeView]} ondrag={onDragMap}>
                                         <Circle
-                                            center={{ lat: marker[0], lng: marker[1] }}
+                                            center={{ lat: latitudeView, lng: longitudeView }}
                                             fillColor="red"
                                             radius={presenceMeterRadius}>
-
                                         </Circle>
                                     </Marker>
                                 </MapContainer> : <></>

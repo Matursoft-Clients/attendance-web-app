@@ -31,6 +31,10 @@ export default function DailyAttendancesPage() {
             selector: row => row.employee.name,
         },
         {
+            name: 'NRP',
+            selector: row => row.employee.nrp,
+        },
+        {
             name: 'Jam Absen Masuk',
             selector: row => row.presence_entry_hour ? row.presence_entry_hour : '-',
         },
@@ -58,13 +62,14 @@ export default function DailyAttendancesPage() {
         if (dailyAttendances) {
             let arrCSVDownloadTemp = [
                 [
-                    'Karyawan', 'Jam Absen Masuk', 'Status Absen Masuk', 'Jam Absen Pulang', 'Status Absen Pulang', 'Tanggal'
+                    'Karyawan', 'NRP', 'Jam Absen Masuk', 'Status Absen Masuk', 'Jam Absen Pulang', 'Status Absen Pulang', 'Tanggal'
                 ]
             ]
 
             dailyAttendances.forEach((e) => {
                 arrCSVDownloadTemp.push([
                     e.employee.name,
+                    e.employee.nrp,
                     e.presence_entry_hour,
                     e.presence_entry_status,
                     e.presence_exit_hour,
