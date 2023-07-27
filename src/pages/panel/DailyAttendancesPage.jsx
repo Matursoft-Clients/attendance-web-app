@@ -39,12 +39,28 @@ export default function DailyAttendancesPage() {
             selector: row => row.presence_entry_hour ? row.presence_entry_hour : '-',
         },
         {
+            name: 'Latitude Absen Masuk',
+            selector: row => row.presence_entry_latitude ? row.presence_entry_latitude : '-'
+        },
+        {
+            name: 'Longitude Absen Masuk',
+            selector: row => row.presence_entry_longitude ? row.presence_entry_longitude : '-'
+        },
+        {
             name: 'Status Absen Masuk',
             selector: row => row.presence_entry_status ? row.presence_entry_status.replace('_', ' ').replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) : '-',
         },
         {
             name: 'Jam Absen Pulang',
             selector: row => row.presence_exit_hour ? row.presence_exit_hour : '-',
+        },
+        {
+            name: 'Latitude Absen Pulang',
+            selector: row => row.presence_exit_latitude ? row.presence_exit_latitude : '-'
+        },
+        {
+            name: 'Longitude Absen Pulang',
+            selector: row => row.presence_exit_longitude ? row.presence_exit_longitude : '-'
         },
         {
             name: 'Status Absen Pulang',
@@ -62,7 +78,7 @@ export default function DailyAttendancesPage() {
         if (dailyAttendances) {
             let arrCSVDownloadTemp = [
                 [
-                    'Karyawan', 'NRP', 'Jam Absen Masuk', 'Status Absen Masuk', 'Jam Absen Pulang', 'Status Absen Pulang', 'Tanggal'
+                    'Karyawan', 'NRP', 'Jam Absen Masuk', 'Latitude Absen Masuk', 'Longitude Absen Masuk', 'Status Absen Masuk', 'Jam Absen Pulang', 'Latitude Absen Pulang', 'Longitude Absen Pulang', 'Status Absen Pulang', 'Tanggal'
                 ]
             ]
 
@@ -71,8 +87,12 @@ export default function DailyAttendancesPage() {
                     e.employee.name,
                     e.employee.nrp,
                     e.presence_entry_hour,
+                    e.presence_entry_latitude,
+                    e.presence_entry_longitude,
                     e.presence_entry_status,
                     e.presence_exit_hour,
+                    e.presence_exit_latitude,
+                    e.presence_exit_longitude,
                     e.presence_exit_status,
                     e.date,
                 ]);
