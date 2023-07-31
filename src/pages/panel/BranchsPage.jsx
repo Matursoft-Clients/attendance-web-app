@@ -16,6 +16,8 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 import './../../styles/leafletStyle.css'
+import DataTableExtensions from "react-data-table-component-extensions";
+import "react-data-table-component-extensions/dist/index.css";
 
 export default function BranchsPage() {
 
@@ -28,6 +30,7 @@ export default function BranchsPage() {
     const [code, setCode] = useState('');
     const [address, setAddress] = useState('');
     const [marker, setMarker] = useState([-7.727989, 109.005913])
+
     /**
      * State Main Data
      * 
@@ -52,6 +55,12 @@ export default function BranchsPage() {
     const [longitudeView, setLongitudeView] = useState(0)
     const [showModalLocation, setShowModalLocation] = useState(false);
 
+    /**
+     * Data table
+     * 
+     */
+    const [currentRowsPerPage, setCurrentRowsPerPage] = useState(10)
+    const [currentPage, setCurrentPage] = useState(1)
 
     /**
      * Func Modal Edit
@@ -72,16 +81,18 @@ export default function BranchsPage() {
         {
             name: '#',
             selector: (row, index) => {
-                return index + 1
+                return currentPage == 1 ? index + 1 : (currentRowsPerPage * (currentPage - 1)) + index + 1
             },
             width: '100px'
         },
         {
             name: 'Kode Cabang',
+            sortable: true,
             selector: row => row.code,
         },
         {
             name: 'Nama Cabang',
+            sortable: true,
             selector: row => row.name,
         },
         {
@@ -508,14 +519,29 @@ export default function BranchsPage() {
 
                     <div className="card mt-3">
                         <div className="card-body">
-                            <DataTable
-                                fixedHeader={true}
-                                fixedHeaderScrollHeight={'550px'}
-                                customStyles={tableCustomStyles}
+                            <DataTableExtensions
                                 columns={columns}
                                 data={branches}
-                                pagination
-                            />
+                                export={false}
+                                print={false}
+                                filterPlaceholder={'Cari'}
+                            >
+                                <DataTable
+                                    fixedHeader={true}
+                                    fixedHeaderScrollHeight={'550px'}
+                                    customStyles={tableCustomStyles}
+                                    columns={columns}
+                                    data={branches}
+                                    pagination
+                                    onChangePage={(page) => {
+                                        setCurrentPage(page)
+                                    }}
+                                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                                        setCurrentPage(currentPage)
+                                        setCurrentRowsPerPage(currentRowsPerPage)
+                                    }}
+                                />
+                            </DataTableExtensions>
                         </div>
                     </div>
                 </div>

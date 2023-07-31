@@ -11,6 +11,8 @@ import { tableCustomStyles } from '../../styles/tableCustomStyles';
 import { ToastContainer } from 'react-toastify';
 import ResponseHandler from '../../utils/ResponseHandler';
 import DateUtil from '../../utils/DateUtil';
+import DataTableExtensions from "react-data-table-component-extensions";
+import "react-data-table-component-extensions/dist/index.css";
 
 export default function JobsPage() {
 
@@ -23,20 +25,29 @@ export default function JobsPage() {
 
     const [jobObjEdit, setJobObjEdit] = useState('')
 
+    /**
+     * Data table
+     * 
+     */
+    const [currentRowsPerPage, setCurrentRowsPerPage] = useState(10)
+    const [currentPage, setCurrentPage] = useState(1)
+
     const columns = [
         {
             name: '#',
             selector: (row, index) => {
-                return index + 1
+                return currentPage == 1 ? index + 1 : (currentRowsPerPage * (currentPage - 1)) + index + 1
             },
             width: '100px'
         },
         {
             name: 'Kode Jabatan',
+            sortable: true,
             selector: row => row.code,
         },
         {
             name: 'Nama Jabatan',
+            sortable: true,
             selector: row => row.name,
         },
         {
@@ -245,14 +256,29 @@ export default function JobsPage() {
 
                     <div className="card mt-3">
                         <div className="card-body">
-                            <DataTable
-                                fixedHeader={true}
-                                fixedHeaderScrollHeight={'550px'}
-                                customStyles={tableCustomStyles}
+                            <DataTableExtensions
                                 columns={columns}
                                 data={jobs}
-                                pagination
-                            />
+                                export={false}
+                                print={false}
+                                filterPlaceholder={'Cari'}
+                            >
+                                <DataTable
+                                    fixedHeader={true}
+                                    fixedHeaderScrollHeight={'550px'}
+                                    customStyles={tableCustomStyles}
+                                    columns={columns}
+                                    data={jobs}
+                                    pagination
+                                    onChangePage={(page) => {
+                                        setCurrentPage(page)
+                                    }}
+                                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                                        setCurrentPage(currentPage)
+                                        setCurrentRowsPerPage(currentRowsPerPage)
+                                    }}
+                                />
+                            </DataTableExtensions>
                         </div>
                     </div>
                 </div>

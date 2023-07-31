@@ -15,6 +15,8 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import noImage from './../../assets/images/samples/no-image.jpg'
 import './../../styles/ckeditor.css'
+import DataTableExtensions from "react-data-table-component-extensions";
+import "react-data-table-component-extensions/dist/index.css";
 
 export default function AnnouncementsPage() {
 
@@ -42,6 +44,13 @@ export default function AnnouncementsPage() {
     const [thumbnailEdit, setThumbmnailEdit] = useState(null)
 
     /**
+     * Data table
+     * 
+     */
+    const [currentRowsPerPage, setCurrentRowsPerPage] = useState(10)
+    const [currentPage, setCurrentPage] = useState(1)
+
+    /**
      * Datatable State
      * 
      */
@@ -49,7 +58,7 @@ export default function AnnouncementsPage() {
         {
             name: '#',
             selector: (row, index) => {
-                return index + 1
+                return currentPage == 1 ? index + 1 : (currentRowsPerPage * (currentPage - 1)) + index + 1
             },
             width: '100px'
         },
@@ -67,6 +76,7 @@ export default function AnnouncementsPage() {
         },
         {
             name: 'Dibuat Pada',
+            sortable: true,
             selector: (row) => {
                 return DateUtil.formatReadable(row.created_at)
             },
@@ -375,14 +385,29 @@ export default function AnnouncementsPage() {
 
                     <div className="card mt-3">
                         <div className="card-body">
-                            <DataTable
-                                fixedHeader={true}
-                                fixedHeaderScrollHeight={'550px'}
-                                customStyles={tableCustomStyles}
+                            <DataTableExtensions
                                 columns={columns}
                                 data={announcements}
-                                pagination
-                            />
+                                export={false}
+                                print={false}
+                                filterPlaceholder={'Cari'}
+                            >
+                                <DataTable
+                                    fixedHeader={true}
+                                    fixedHeaderScrollHeight={'550px'}
+                                    customStyles={tableCustomStyles}
+                                    columns={columns}
+                                    data={announcements}
+                                    pagination
+                                    onChangePage={(page) => {
+                                        setCurrentPage(page)
+                                    }}
+                                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                                        setCurrentPage(currentPage)
+                                        setCurrentRowsPerPage(currentRowsPerPage)
+                                    }}
+                                />
+                            </DataTableExtensions>
                         </div>
                     </div>
                 </div>

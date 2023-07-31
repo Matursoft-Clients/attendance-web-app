@@ -17,8 +17,8 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 import './../../styles/leafletStyle.css'
-
-
+import DataTableExtensions from "react-data-table-component-extensions";
+import "react-data-table-component-extensions/dist/index.css";
 
 export default function CustomAttendanceLocationsPage() {
 
@@ -36,24 +36,34 @@ export default function CustomAttendanceLocationsPage() {
     const markerRef = useRef(null)
     const [presenceMeterRadius, setPresenceMeterRadius] = useState('')
 
+    /**
+     * Data table
+     * 
+     */
+    const [currentRowsPerPage, setCurrentRowsPerPage] = useState(10)
+    const [currentPage, setCurrentPage] = useState(1)
+
     const columns = [
         {
             name: '#',
             selector: (row, index) => {
-                return index + 1
+                return currentPage == 1 ? index + 1 : (currentRowsPerPage * (currentPage - 1)) + index + 1
             },
             width: '100px'
         },
         {
             name: 'Karyawan',
+            sortable: true,
             selector: row => row.employee.name,
         },
         {
             name: 'Tanggal Awal',
+            sortable: true,
             selector: row => DateUtil.formatYmdFromDate(row.start_date),
         },
         {
             name: 'Tanggal Akhir',
+            sortable: true,
             selector: row => DateUtil.formatYmdFromDate(row.end_date),
         },
         {
@@ -72,6 +82,7 @@ export default function CustomAttendanceLocationsPage() {
         },
         {
             name: 'Dibuat Pada',
+            sortable: true,
             selector: (row) => {
                 return DateUtil.formatReadable(row.created_at)
             },
@@ -376,14 +387,29 @@ export default function CustomAttendanceLocationsPage() {
 
                     <div className="card mt-3">
                         <div className="card-body">
-                            <DataTable
-                                fixedHeader={true}
-                                fixedHeaderScrollHeight={'550px'}
-                                customStyles={tableCustomStyles}
+                            <DataTableExtensions
                                 columns={columns}
                                 data={customAttendances}
-                                pagination
-                            />
+                                export={false}
+                                print={false}
+                                filterPlaceholder={'Cari'}
+                            >
+                                <DataTable
+                                    fixedHeader={true}
+                                    fixedHeaderScrollHeight={'550px'}
+                                    customStyles={tableCustomStyles}
+                                    columns={columns}
+                                    data={customAttendances}
+                                    pagination
+                                    onChangePage={(page) => {
+                                        setCurrentPage(page)
+                                    }}
+                                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                                        setCurrentPage(currentPage)
+                                        setCurrentRowsPerPage(currentRowsPerPage)
+                                    }}
+                                />
+                            </DataTableExtensions>
                         </div>
                     </div>
                 </div>
