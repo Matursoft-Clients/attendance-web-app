@@ -89,7 +89,7 @@ export default function EmployeesPage() {
             name: 'Foto',
             cell: (row) => {
                 return (
-                    <img className="py-1 img-fluid wid-70" src={row.photo} alt="User image" />
+                    <img className="py-1 img-fluid wid-70" src={row.photo ? row.photo : require('./../../assets/images/samples/no-photo.png')} alt="User image" />
                 )
             }
         },
