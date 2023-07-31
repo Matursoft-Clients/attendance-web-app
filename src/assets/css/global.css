@@ -3,3 +3,11 @@
     background-color: #161c25;
     color: #FFF;
 }
+
+.rdt_TableCol div {
+    white-space: unset !important;
+}
+
+.rdt_TableCol_Sortable div {
+    white-space: unset !important;
+}

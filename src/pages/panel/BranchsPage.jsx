@@ -10,7 +10,7 @@ import DataTable from 'react-data-table-component';
 import { tableCustomStyles } from '../../styles/tableCustomStyles';
 import { ToastContainer } from 'react-toastify';
 import ResponseHandler from '../../utils/ResponseHandler';
-import { Circle, MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
+import { Circle, MapContainer, Marker, TileLayer } from 'react-leaflet'
 import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';

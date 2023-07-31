@@ -9,6 +9,14 @@ import ResponseHandler from '../../utils/ResponseHandler';
 import DateUtil from '../../utils/DateUtil';
 import { CSVLink } from "react-csv";
 import { FiletypeCsv, Filter } from '@styled-icons/bootstrap'
+import { MapPin } from '@styled-icons/boxicons-solid'
+import { Button, Form, Modal } from 'react-bootstrap'
+import { MapContainer, Marker, TileLayer } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css';
+import './../../styles/leafletStyle.css'
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 export default function DailyAttendancesPage() {
 
@@ -18,61 +26,167 @@ export default function DailyAttendancesPage() {
     const [endDate, setEndDate] = useState(`${DateUtil.formatYmdFromDate(new Date())}`)
     const [status, setStatus] = useState('today')
 
+    /**
+     * State View Modal Location
+     * 
+     */
+    const [latitudeView, setLatitudeView] = useState(0)
+    const [longitudeView, setLongitudeView] = useState(0)
+    const [showModalLocation, setShowModalLocation] = useState(false);
+
+    /**
+     * Data table
+     * 
+     */
+    const [currentRowsPerPage, setCurrentRowsPerPage] = useState(10)
+    const [currentPage, setCurrentPage] = useState(1)
+
     const columns = [
         {
             name: '#',
+            allowOverflow: true,
+            style: {
+                whiteSpace: 'unset'
+            },
             selector: (row, index) => {
-                return index + 1
+                return currentPage == 1 ? index + 1 : (currentRowsPerPage * (currentPage - 1)) + index + 1
             },
             width: '100px'
         },
         {
             name: 'Karyawan',
+            sortable: true,
+            allowOverflow: true,
+            style: {
+                whiteSpace: 'unset'
+            },
             selector: row => row.employee.name,
         },
         {
             name: 'NRP',
+            allowOverflow: true,
+            style: {
+                whiteSpace: 'unset'
+            },
             selector: row => row.employee.nrp,
         },
         {
             name: 'Jam Absen Masuk',
+            sortable: true,
+            center: true,
+            allowOverflow: true,
+            style: {
+                whiteSpace: 'unset'
+            },
             selector: row => row.presence_entry_hour ? row.presence_entry_hour : '-',
         },
         {
-            name: 'Latitude Absen Masuk',
-            selector: row => row.presence_entry_latitude ? row.presence_entry_latitude : '-'
-        },
-        {
-            name: 'Longitude Absen Masuk',
-            selector: row => row.presence_entry_longitude ? row.presence_entry_longitude : '-'
+            name: 'Lokasi Absen Masuk',
+            center: true,
+            allowOverflow: true,
+            style: {
+                whiteSpace: 'unset'
+            },
+            selector: (row) => {
+                return row.presence_entry_latitude && row.presence_entry_longitude ?
+                    <button className='btn btn-sm btn-success d-flex align-items-center justify-content-center' onClick={() => {
+                        handleShowModalViewLocation(row.presence_entry_latitude, row.presence_entry_longitude)
+                        setShowModalLocation('Absen Masuk')
+                    }} ><MapPin /> Lihat Lokasi</button>
+                    : <>-</>
+            }
         },
         {
             name: 'Status Absen Masuk',
-            selector: row => row.presence_entry_status ? row.presence_entry_status.replace('_', ' ').replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) : '-',
+            center: true,
+            allowOverflow: true,
+            style: {
+                whiteSpace: 'unset'
+            },
+            selector: (row) => {
+                let color = ''
+
+                if (row.presence_entry_status == 'on_time') {
+                    color = 'success'
+                } else if (row.presence_entry_status == 'late') {
+                    color = 'danger'
+                } else if (row.presence_entry_status == 'not_present') {
+                    color = 'light'
+                } else if (row.presence_entry_status == 'not_valid') {
+                    color = 'dark'
+                }
+
+                return color ? <div className={`badge text-md bg-${color}`}>{row.presence_entry_status.replace('_', ' ').replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}</div> : '-'
+            }
         },
         {
             name: 'Jam Absen Pulang',
+            center: true,
+            sortable: true,
+            allowOverflow: true,
+            style: {
+                whiteSpace: 'unset'
+            },
             selector: row => row.presence_exit_hour ? row.presence_exit_hour : '-',
         },
         {
-            name: 'Latitude Absen Pulang',
-            selector: row => row.presence_exit_latitude ? row.presence_exit_latitude : '-'
-        },
-        {
-            name: 'Longitude Absen Pulang',
-            selector: row => row.presence_exit_longitude ? row.presence_exit_longitude : '-'
+            name: 'Lokasi Absen Pulang',
+            center: true,
+            allowOverflow: true,
+            style: {
+                whiteSpace: 'unset'
+            },
+            selector: (row) => {
+                return row.presence_exit_latitude && row.presence_exit_longitude ?
+                    <button className='btn btn-sm btn-success d-flex align-items-center justify-content-center' onClick={() => {
+                        handleShowModalViewLocation(row.presence_exit_latitude, row.presence_exit_longitude)
+                        setShowModalLocation('Absen Pulang')
+                    }} ><MapPin /> Lihat Lokasi</button>
+                    : <>-</>
+            }
         },
         {
             name: 'Status Absen Pulang',
-            selector: row => row.presence_exit_status ? row.presence_exit_status.replace('_', ' ').replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) : '-',
+            center: true,
+            allowOverflow: true,
+            style: {
+                whiteSpace: 'unset'
+            },
+            selector: (row) => {
+                let color = ''
+
+                if (row.presence_exit_status == 'on_time') {
+                    color = 'success'
+                } else if (row.presence_exit_status == 'late') {
+                    color = 'danger'
+                } else if (row.presence_exit_status == 'not_present') {
+                    color = 'light'
+                } else if (row.presence_exit_status == 'not_valid') {
+                    color = 'dark'
+                }
+
+                return color ? <div className={`badge text-md bg-${color}`}>{row.presence_exit_status.replace('_', ' ').replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}</div> : '-'
+            }
         },
         {
             name: 'Tanggal',
+            center: true,
+            sortable: true,
+            allowOverflow: true,
+            style: {
+                whiteSpace: 'unset'
+            },
             selector: (row) => {
-                return DateUtil.formatYmdHisFromDate(row.date)
+                return DateUtil.formatYmdFromDate(row.date)
             },
         }
     ];
+
+    const handleCloseModalViewLocation = () => setShowModalLocation(false);
+    const handleShowModalViewLocation = (latitude, longitude) => {
+        setLatitudeView(latitude)
+        setLongitudeView(longitude)
+    };
 
     const loadCsvData = () => {
         if (dailyAttendances) {
@@ -104,6 +218,13 @@ export default function DailyAttendancesPage() {
 
     useEffect(() => {
         loadMainData()
+
+        let DefaultIcon = L.icon({
+            iconUrl: icon,
+            shadowUrl: iconShadow
+        });
+
+        L.Marker.prototype.options.icon = DefaultIcon;
     }, [])
 
     useEffect(() => {
@@ -125,6 +246,35 @@ export default function DailyAttendancesPage() {
 
     return (
         <div>
+            {/* Modal Show Location  */}
+            <Modal show={showModalLocation} onHide={handleCloseModalViewLocation} size="xl">
+                <Modal.Header>
+                    <Modal.Title>Lokasi {showModalLocation}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group>
+                        <Form.Label>Lokasi</Form.Label>
+                        {
+                            showModalLocation ?
+                                <MapContainer center={[latitudeView, longitudeView]} zoom={20} scrollWheelZoom={true}>
+                                    <TileLayer
+                                        attribution="Google Maps"
+                                        url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
+                                    />
+                                    <Marker position={[latitudeView, longitudeView]} >
+                                    </Marker>
+                                </MapContainer> : <></>
+                        }
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModalViewLocation}>
+                        Tutup
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* End of Modal Show Location */}
+
             <ToastContainer />
             <div className="page-header">
                 <div className="page-block">
@@ -213,6 +363,13 @@ export default function DailyAttendancesPage() {
                                 columns={columns}
                                 data={dailyAttendances}
                                 pagination
+                                onChangePage={(page) => {
+                                    setCurrentPage(page)
+                                }}
+                                onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                                    setCurrentPage(currentPage)
+                                    setCurrentRowsPerPage(currentRowsPerPage)
+                                }}
                             />
                         </div>
                     </div>
