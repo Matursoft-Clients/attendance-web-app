@@ -18,6 +18,7 @@ import 'leaflet/dist/leaflet.css';
 import './../../styles/leafletStyle.css'
 import DataTableExtensions from "react-data-table-component-extensions";
 import "react-data-table-component-extensions/dist/index.css";
+import AsyncSelect from 'react-select/async';
 
 export default function BranchsPage() {
 
@@ -30,6 +31,7 @@ export default function BranchsPage() {
     const [code, setCode] = useState('');
     const [address, setAddress] = useState('');
     const [marker, setMarker] = useState([-7.727989, 109.005913])
+    const [cityUuid, setCityUuid] = useState(null)
 
     /**
      * State Main Data
@@ -96,6 +98,10 @@ export default function BranchsPage() {
             selector: row => row.name,
         },
         {
+            name: 'Kabupaten/Kota',
+            selector: row => row.city ? row.city.name : '-',
+        },
+        {
             name: 'Alamat',
             selector: row => row.presence_location_address,
         },
@@ -138,6 +144,27 @@ export default function BranchsPage() {
         L.Marker.prototype.options.icon = DefaultIcon;
     }, [])
 
+    const loadOptionsCities = (inputValue, cb) => {
+        setTimeout(() => {
+            if (inputValue.length > 0) {
+                axios.get(APP_CONFIG.API_URL + `branches/get-city/${inputValue}`, {
+                    headers: {
+                        Authorization: 'Bearer ' + TokenUtil.getApiToken()
+                    }
+                }).then((res) => {
+                    cb(res.data.data.cities.map((e) => {
+                        return {
+                            value: e.uuid,
+                            label: e.name
+                        }
+                    }))
+                }).catch((err) => {
+                    ResponseHandler.errorHandler(err)
+                })
+            }
+        }, 500)
+    }
+
     const loadSettings = () => {
         axios.get(APP_CONFIG.API_URL + 'settings', {
             headers: {
@@ -178,6 +205,7 @@ export default function BranchsPage() {
         axios.post(APP_CONFIG.API_URL + 'branches', {
             name: name,
             code: code,
+            city_uuid: cityUuid,
             presence_location_address: address,
             presence_location_latitude: marker.length > 0 ? marker[0] : null,
             presence_location_longitude: marker.length > 0 ? marker[1] : null,
@@ -193,6 +221,7 @@ export default function BranchsPage() {
             setCode('')
             setAddress('')
             setMarker([-7.727989, 109.005913])
+            setCityUuid(null)
         }).catch((err) => {
             ResponseHandler.errorHandler(err)
         })
@@ -312,6 +341,12 @@ export default function BranchsPage() {
                                     <Form.Label>Alamat</Form.Label>
                                     <Form.Control as={'textarea'} placeholder='Alamat' value={address} onChange={(event) => { setAddress(event.target.value) }} />
                                 </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Kabupaten/Kota</Form.Label>
+                                    <AsyncSelect cacheOptions loadOptions={loadOptionsCities} onChange={(e) => {
+                                        setCityUuid(e.value)
+                                    }} defaultOptions />
+                                </Form.Group>
                             </div>
                             <div className="col-lg-6">
                                 <Form.Group>
@@ -414,6 +449,17 @@ export default function BranchsPage() {
                                             return obj
                                         })
                                     }} />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Kabupaten/Kota</Form.Label>
+                                    <AsyncSelect cacheOptions loadOptions={loadOptionsCities} onChange={(e) => {
+                                        setBranchObjEdit(() => {
+                                            let obj = Object.assign({}, branchObjEdit)
+                                            obj.city_uuid = e.value
+
+                                            return obj
+                                        })
+                                    }} defaultValue={[{ value: branchObjEdit.city ? branchObjEdit.city.uuid : '', label: branchObjEdit.city ? branchObjEdit.city.name : '' }]} defaultOptions={[{ value: branchObjEdit.city ? branchObjEdit.city.uuid : '', label: branchObjEdit.city ? branchObjEdit.city.name : '' }]} />
                                 </Form.Group>
                             </div>
                             <div className="col-lg-6">
