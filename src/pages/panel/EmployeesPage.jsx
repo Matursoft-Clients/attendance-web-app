@@ -8,6 +8,7 @@ import axios from 'axios';
 import APP_CONFIG from '../../utils/APP_CONFIG';
 import TokenUtil from '../../utils/TokenUtil';
 import DataTable from 'react-data-table-component';
+import DataTableExtensions from "react-data-table-component-extensions";
 import { tableCustomStyles } from '../../styles/tableCustomStyles';
 import { ToastContainer } from 'react-toastify';
 import ResponseHandler from '../../utils/ResponseHandler';
@@ -15,6 +16,7 @@ import DateUtil from '../../utils/DateUtil';
 import { Calendar } from '@mantine/dates';
 import './../../styles/react-calendar.css'
 import { modals } from '@mantine/modals';
+import "react-data-table-component-extensions/dist/index.css";
 
 export default function EmployeesPage() {
 
@@ -65,6 +67,13 @@ export default function EmployeesPage() {
     const [employeeCalendar, setEmployeeCalendar] = useState([])
 
     /**
+     * Data table
+     * 
+     */
+    const [currentRowsPerPage, setCurrentRowsPerPage] = useState(10)
+    const [currentPage, setCurrentPage] = useState(1)
+
+    /**
      * Data Table
      * 
      */
@@ -72,7 +81,7 @@ export default function EmployeesPage() {
         {
             name: '#',
             selector: (row, index) => {
-                return index + 1
+                return currentPage == 1 ? index + 1 : (currentRowsPerPage * (currentPage - 1)) + index + 1
             },
             width: '100px'
         },
@@ -90,28 +99,34 @@ export default function EmployeesPage() {
         },
         {
             name: 'Nama',
+            sortable: true,
             selector: row => row.name,
         },
         {
             name: 'Cabang',
+            sortable: true,
             selector: row => row.branch.name,
         },
         {
             name: 'Jabatan',
+            sortable: true,
             selector: row => row.job_position.name,
         },
         {
             name: 'email',
+            sortable: true,
             selector: row => row.email,
         },
         {
             name: 'Device ID',
+            sortable: true,
             selector: (row) => {
                 return row.device_id ? row.device_id : '-'
             },
         },
         {
             name: 'Device Name',
+            sortable: true,
             selector: (row) => {
                 return row.device_name ? row.device_name : '-'
             },
@@ -134,7 +149,7 @@ export default function EmployeesPage() {
                         <button className='btn btn-sm btn-danger mx-1' onClick={() => {
                             handleDeleteData(row.uuid)
                         }}><Trash className='mr-1' />Hapus</button>
-                        <button className='btn btn-sm btn-dark mx-1' onClick={() => {
+                        <button className='btn btn-sm btn-dark' onClick={() => {
                             handleRefreshDevice(row.uuid)
                         }}><Devices className='mr-1' />Refresh Device</button>
                     </div>
@@ -785,14 +800,29 @@ export default function EmployeesPage() {
 
                     <div className="card mt-3">
                         <div className="card-body">
-                            <DataTable
-                                fixedHeader={true}
-                                fixedHeaderScrollHeight={'550px'}
-                                customStyles={tableCustomStyles}
+                            <DataTableExtensions
                                 columns={columns}
                                 data={employees}
-                                pagination
-                            />
+                                export={false}
+                                print={false}
+                                filterPlaceholder={'Cari'}
+                            >
+                                <DataTable
+                                    fixedHeader={true}
+                                    fixedHeaderScrollHeight={'550px'}
+                                    customStyles={tableCustomStyles}
+                                    columns={columns}
+                                    data={employees}
+                                    pagination
+                                    onChangePage={(page) => {
+                                        setCurrentPage(page)
+                                    }}
+                                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                                        setCurrentPage(currentPage)
+                                        setCurrentRowsPerPage(currentRowsPerPage)
+                                    }}
+                                />
+                            </DataTableExtensions>
                         </div>
                     </div>
                 </div>

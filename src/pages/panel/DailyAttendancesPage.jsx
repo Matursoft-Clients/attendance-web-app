@@ -17,6 +17,8 @@ import './../../styles/leafletStyle.css'
 import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import DataTableExtensions from "react-data-table-component-extensions";
+import "react-data-table-component-extensions/dist/index.css";
 
 export default function DailyAttendancesPage() {
 
@@ -44,10 +46,6 @@ export default function DailyAttendancesPage() {
     const columns = [
         {
             name: '#',
-            allowOverflow: true,
-            style: {
-                whiteSpace: 'unset'
-            },
             selector: (row, index) => {
                 return currentPage == 1 ? index + 1 : (currentRowsPerPage * (currentPage - 1)) + index + 1
             },
@@ -56,37 +54,21 @@ export default function DailyAttendancesPage() {
         {
             name: 'Karyawan',
             sortable: true,
-            allowOverflow: true,
-            style: {
-                whiteSpace: 'unset'
-            },
             selector: row => row.employee.name,
         },
         {
             name: 'NRP',
-            allowOverflow: true,
-            style: {
-                whiteSpace: 'unset'
-            },
             selector: row => row.employee.nrp,
         },
         {
             name: 'Jam Absen Masuk',
             sortable: true,
             center: true,
-            allowOverflow: true,
-            style: {
-                whiteSpace: 'unset'
-            },
             selector: row => row.presence_entry_hour ? row.presence_entry_hour : '-',
         },
         {
             name: 'Lokasi Absen Masuk',
             center: true,
-            allowOverflow: true,
-            style: {
-                whiteSpace: 'unset'
-            },
             selector: (row) => {
                 return row.presence_entry_latitude && row.presence_entry_longitude ?
                     <button className='btn btn-sm btn-success d-flex align-items-center justify-content-center' onClick={() => {
@@ -99,10 +81,6 @@ export default function DailyAttendancesPage() {
         {
             name: 'Status Absen Masuk',
             center: true,
-            allowOverflow: true,
-            style: {
-                whiteSpace: 'unset'
-            },
             selector: (row) => {
                 let color = ''
 
@@ -123,19 +101,11 @@ export default function DailyAttendancesPage() {
             name: 'Jam Absen Pulang',
             center: true,
             sortable: true,
-            allowOverflow: true,
-            style: {
-                whiteSpace: 'unset'
-            },
             selector: row => row.presence_exit_hour ? row.presence_exit_hour : '-',
         },
         {
             name: 'Lokasi Absen Pulang',
             center: true,
-            allowOverflow: true,
-            style: {
-                whiteSpace: 'unset'
-            },
             selector: (row) => {
                 return row.presence_exit_latitude && row.presence_exit_longitude ?
                     <button className='btn btn-sm btn-success d-flex align-items-center justify-content-center' onClick={() => {
@@ -148,10 +118,6 @@ export default function DailyAttendancesPage() {
         {
             name: 'Status Absen Pulang',
             center: true,
-            allowOverflow: true,
-            style: {
-                whiteSpace: 'unset'
-            },
             selector: (row) => {
                 let color = ''
 
@@ -172,10 +138,6 @@ export default function DailyAttendancesPage() {
             name: 'Tanggal',
             center: true,
             sortable: true,
-            allowOverflow: true,
-            style: {
-                whiteSpace: 'unset'
-            },
             selector: (row) => {
                 return DateUtil.formatYmdFromDate(row.date)
             },
@@ -355,22 +317,29 @@ export default function DailyAttendancesPage() {
                                     </div>
                                 </div>
                             </div>
-
-                            <DataTable
-                                fixedHeader={true}
-                                fixedHeaderScrollHeight={'550px'}
-                                customStyles={tableCustomStyles}
+                            <DataTableExtensions
                                 columns={columns}
                                 data={dailyAttendances}
-                                pagination
-                                onChangePage={(page) => {
-                                    setCurrentPage(page)
-                                }}
-                                onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
-                                    setCurrentPage(currentPage)
-                                    setCurrentRowsPerPage(currentRowsPerPage)
-                                }}
-                            />
+                                export={false}
+                                print={false}
+                                filterPlaceholder={'Cari'}
+                            >
+                                <DataTable
+                                    fixedHeader={true}
+                                    fixedHeaderScrollHeight={'550px'}
+                                    customStyles={tableCustomStyles}
+                                    columns={columns}
+                                    data={dailyAttendances}
+                                    pagination
+                                    onChangePage={(page) => {
+                                        setCurrentPage(page)
+                                    }}
+                                    onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                                        setCurrentPage(currentPage)
+                                        setCurrentRowsPerPage(currentRowsPerPage)
+                                    }}
+                                />
+                            </DataTableExtensions>
                         </div>
                     </div>
                 </div>
