@@ -376,6 +376,8 @@ export default function AnnouncementsPage() {
                     <div className="card mt-3">
                         <div className="card-body">
                             <DataTable
+                                fixedHeader={true}
+                                fixedHeaderScrollHeight={'550px'}
                                 customStyles={tableCustomStyles}
                                 columns={columns}
                                 data={announcements}

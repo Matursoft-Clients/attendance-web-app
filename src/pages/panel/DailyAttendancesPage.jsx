@@ -207,6 +207,8 @@ export default function DailyAttendancesPage() {
                             </div>
 
                             <DataTable
+                                fixedHeader={true}
+                                fixedHeaderScrollHeight={'550px'}
                                 customStyles={tableCustomStyles}
                                 columns={columns}
                                 data={dailyAttendances}
