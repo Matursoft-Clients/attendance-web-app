@@ -19,6 +19,7 @@ import 'leaflet/dist/leaflet.css';
 import './../../styles/leafletStyle.css'
 import DataTableExtensions from "react-data-table-component-extensions";
 import "react-data-table-component-extensions/dist/index.css";
+import Select from 'react-select'
 
 export default function CustomAttendanceLocationsPage() {
 
@@ -30,7 +31,7 @@ export default function CustomAttendanceLocationsPage() {
     const [endDate, setEndDate] = useState('')
     const [presenceLocationAddress, setPresenceLocationAddress] = useState('')
     const [marker, setMarker] = useState([-7.727989, 109.005913])
-    const [employeeUuid, setEmployeeUuid] = useState('')
+    const [employeeUuid, setEmployeeUuid] = useState([])
     const [latitudeView, setLatitudeView] = useState(0)
     const [longitudeView, setLongitudeView] = useState(0)
     const markerRef = useRef(null)
@@ -140,7 +141,7 @@ export default function CustomAttendanceLocationsPage() {
     }
 
     const loadEmployees = () => {
-        axios.get(APP_CONFIG.API_URL + 'employees', {
+        axios.get(APP_CONFIG.API_URL + 'employees/custom-attendances', {
             headers: {
                 Authorization: 'Bearer ' + TokenUtil.getApiToken()
             }
@@ -151,18 +152,11 @@ export default function CustomAttendanceLocationsPage() {
         })
     }
 
-    const _renderChooseKaryawan = () => {
-        if (employees) {
-            return employees.map((e) => {
-                return (
-                    <option value={e.uuid}>{e.name}</option>
-                )
-            })
-        }
-    }
-
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setEmployeeUuid([])
+        setShow(true)
+    };
 
     const handleCloseModalViewLocation = () => setShowModalLocation(false);
     const handleShowModalViewLocation = (latitude, longitude) => {
@@ -173,7 +167,7 @@ export default function CustomAttendanceLocationsPage() {
 
     const handleSaveData = () => {
         axios.post(APP_CONFIG.API_URL + 'custom-attendance-locations', {
-            employee_uuid: employeeUuid,
+            employee_uuid: employeeUuid.map((e) => e.value),
             start_date: startDate,
             end_date: endDate,
             presence_location_address: presenceLocationAddress,
@@ -187,6 +181,7 @@ export default function CustomAttendanceLocationsPage() {
             handleClose();
             ResponseHandler.successHandler(res)
             loadMainData()
+            loadEmployees()
         }).catch((err) => {
             ResponseHandler.errorHandler(err)
         })
@@ -210,6 +205,7 @@ export default function CustomAttendanceLocationsPage() {
                 }).then((res) => {
                     ResponseHandler.successHandler(res)
                     loadMainData()
+                    loadEmployees()
                 }).catch((err) => {
                     ResponseHandler.errorHandler(err)
                 })
@@ -265,10 +261,17 @@ export default function CustomAttendanceLocationsPage() {
                             <div className="col-lg-6">
                                 <Form.Group className="mb-3">
                                     <Form.Label>Karyawan</Form.Label>
-                                    <Form.Select aria-label="Default select example" onChange={(e) => { setEmployeeUuid(e.target.value) }}>
-                                        <option selected value={''} disabled>Pilih Karyawan</option>
-                                        {_renderChooseKaryawan()}
-                                    </Form.Select>
+                                    <Select
+                                        value={employeeUuid}
+                                        isMulti
+                                        options={employees.map((employee) => {
+                                            return {
+                                                value: employee.uuid,
+                                                label: employee.name
+                                            }
+                                        })}
+                                        onChange={(choice) => setEmployeeUuid(choice)}
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Tanggal Awal</Form.Label>
